@@ -187,30 +187,30 @@ void WPlot::zoom_Redo(void)
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
 {
-    int selected = 0;
-    if (!(m_plotter->onCursor(pos, selected, false)))
-    {
-        //m_plotter->addCursorAtPixel(event->pos().x());
-        qDebug() << "Context not on cursor";
-    }
-    else
-    {
-        //m_plotter->removeCursor(selected);
-        qDebug() << "Context on cursor";
-    }
-
+    bool onCursor = m_plotter->onCursor(pos, this->selectedCursor, false);
 
     QMenu contextMenu("Context menu", this);
 
-    QAction addCursor("Add cursor", this);
-    connect(&addCursor, SIGNAL(triggered()), this, SLOT(addCursor()));
-    contextMenu.addAction(&addCursor);
+    QAction addCursorAction("Add cursor", this);
+    connect(&addCursorAction, SIGNAL(triggered()), this, SLOT(addCursor()));
+    contextMenu.addAction(&addCursorAction);
+
+    QAction removeCursorAction("Remove cursor", this);
+    if (onCursor) {
+        connect(&removeCursorAction, SIGNAL(triggered()), this, SLOT(removeCursor()));
+        contextMenu.addAction(&removeCursorAction);
+    }
 
     contextMenu.exec(mapToGlobal(pos));
 }
 
 void WPlot::addCursor() {
     m_plotter->addCursor();
+    updatePlot();
+}
+
+void WPlot::removeCursor() {
+    m_plotter->removeCursor(this->selectedCursor);
     updatePlot();
 }
 

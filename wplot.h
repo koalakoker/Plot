@@ -39,10 +39,12 @@ private:
     QPoint m_lastPoint;
     bool m_movingUndo;
     double m_y_max = 0, m_y_min = 0;
+    int selectedCursor;
 
 private slots:
     void ShowContextMenu(QPoint pos);
     void addCursor();
+    void removeCursor();
 
 protected:
     void paintEvent(QPaintEvent *);
