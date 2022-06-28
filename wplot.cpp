@@ -2,6 +2,7 @@
 
 #include <QGestureEvent>
 #include <QMouseEvent>
+#include <QMenu>
 #include <QFile>
 #include <QTextStream>
 #include <QRegularExpression>
@@ -10,10 +11,16 @@
 WPlot::WPlot(QWidget *parent) :
     QWidget(parent), m_plotter(NULL)
 {
+    this->wParent = parent;
     m_drag = false;
 
     grabGesture(Qt::PinchGesture);
     setMouseTracking(true);
+
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(ShowContextMenu(QPoint)));
 }
 WPlot::~WPlot()
 {
@@ -52,8 +59,16 @@ void WPlot::createPlot(void)
         x_max = m_data[m_data.size()-1][0];
     }
 
+    QSize plotterSize;
+    if (wParent == NULL) {
+        plotterSize = this->size();
+    } else {
+        plotterSize = this->wParent->size();
+        this->resize(plotterSize);
+    }
+
     m_plotter = new Plotter(
-                size(),
+                plotterSize,
                 QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min),
                 m_data,
                 Plotter::LINE_STYLE);
@@ -169,6 +184,36 @@ void WPlot::zoom_Redo(void)
     updatePlot();
 }
 
+// Context Menu
+void WPlot::ShowContextMenu(QPoint pos)
+{
+    int selected = 0;
+    if (!(m_plotter->onCursor(pos, selected, false)))
+    {
+        //m_plotter->addCursorAtPixel(event->pos().x());
+        qDebug() << "Context not on cursor";
+    }
+    else
+    {
+        //m_plotter->removeCursor(selected);
+        qDebug() << "Context on cursor";
+    }
+
+
+    QMenu contextMenu("Context menu", this);
+
+    QAction addCursor("Add cursor", this);
+    connect(&addCursor, SIGNAL(triggered()), this, SLOT(addCursor()));
+    contextMenu.addAction(&addCursor);
+
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+void WPlot::addCursor() {
+    m_plotter->addCursor();
+    updatePlot();
+}
+
 // Events
 void WPlot::paintEvent(QPaintEvent *)
 {
@@ -194,20 +239,6 @@ void WPlot::mousePressEvent(QMouseEvent* event)
             m_drag = true;
         }
 
-    }
-
-    if (event->button() == addCursorButton)
-    {
-        int selected = 0;
-        if (!(m_plotter->onCursor(event->pos(), selected, false)))
-        {
-            m_plotter->addCursorAtPixel(event->pos().x());
-        }
-        else
-        {
-            m_plotter->removeCursor(selected);
-        }
-        updatePlot();
     }
 }
 void WPlot::mouseDoubleClickEvent(QMouseEvent* event)

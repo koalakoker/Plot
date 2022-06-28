@@ -20,6 +20,7 @@ public:
     const Qt::MouseButton dragButton = Qt::LeftButton;
     const Qt::MouseButton addCursorButton = Qt::RightButton;
 
+    QWidget* wParent;
     Plotter *m_plotter;
     QString m_fileName;
 
@@ -39,9 +40,9 @@ private:
     bool m_movingUndo;
     double m_y_max = 0, m_y_min = 0;
 
-    void createMenu(void);
-
 private slots:
+    void ShowContextMenu(QPoint pos);
+    void addCursor();
 
 protected:
     void paintEvent(QPaintEvent *);

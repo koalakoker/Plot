@@ -9,7 +9,7 @@
 // Plot
 QImage Plotter::plot()
 {
-    const Qt::GlobalColor plotColor[] = {Qt::black, Qt::blue, Qt::green, Qt::red};
+    const Qt::GlobalColor plotColor[] = {Qt::black, Qt::blue, Qt::green, Qt::red, Qt::yellow, Qt::gray};
 
     QElapsedTimer t;
     t.start();
