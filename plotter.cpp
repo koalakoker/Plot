@@ -105,18 +105,19 @@ QImage Plotter::plot()
     /* Cursors */
     int curLabelYPos = 30;
 
-    pen.setColor(Qt::black);
-    pen.setStyle(Qt::DashLine);
-    p.setPen(pen);
-
     m_cursorRect.clear();
     for (int cur = 0; cur < m_cursorPos.size(); cur++)
     {
         qreal curXpos       = m_cursorPos.at(cur);
         qreal curYposTop    = m_range.y();
         qreal curYposBottom = m_range.y()+m_range.height();
+
+        pen.setColor(Qt::black);
+        pen.setStyle(Qt::DashLine);
+        p.setPen(pen);
+
         p.drawLine(map(curXpos, curYposTop), map(curXpos, curYposBottom));
-        p.drawText(mapX(curXpos)+5,curLabelYPos,QString::number(cur+1));
+        p.drawText(mapX(curXpos)+5,curLabelYPos,QString::number(cur+1) + "@" + QString::number(curXpos));
 
         QPointF top     = map(curXpos, curYposTop);
         QPointF bottom  = map(curXpos, curYposBottom);
@@ -124,6 +125,24 @@ QImage Plotter::plot()
         QPoint  bottomRight(bottom.x() + m_cursorMargin, bottom.y());
         QRect   rect(topLeft, bottomRight);
         m_cursorRect.append(rect);
+
+        // Draw value at cursor text
+        QVector<double> values = getCursorValueTrack(cur);
+        QVectorIterator<double> itNumbers(values);
+        itNumbers.next(); // Skip first
+
+        int i = 0;
+        //for (double yValue: values) {
+        while (itNumbers.hasNext()) {
+            double yValue = itNumbers.next();
+            pen.setColor(plotColor[i]);
+
+            pen.setStyle(Qt::SolidLine);
+            p.setPen(pen);
+            p.drawText(map(curXpos, yValue) + QPointF(5,0), QString::number(yValue));
+            i++;
+
+        }
     }
 
     /* Axis */
