@@ -181,6 +181,24 @@ void WPlot::zoom_Redo(void)
     m_plotter->Redo();
     updatePlot();
 }
+void WPlot::zoom_In(void)
+{
+    Plotter* m_plotter = this->m_plotter;
+    if (!m_plotter)
+        return;
+    m_plotter->AddUndoStatus();
+    m_plotter->zoomXToCursors(QPoint(this->size().width()/2,this->size().height()/2));
+    this->updatePlot();
+}
+void WPlot::zoom_Out(void)
+{
+    Plotter* m_plotter = this->m_plotter;
+    if (!m_plotter)
+        return;
+    m_plotter->AddUndoStatus();
+    m_plotter->unZoom();
+    this->updatePlot();
+}
 
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
@@ -199,6 +217,14 @@ void WPlot::ShowContextMenu(QPoint pos)
         contextMenu.addAction(&removeCursorAction);
     }
 
+    QAction zoomInAction("Zoom in", this);
+    connect(&zoomInAction, SIGNAL(triggered()), this, SLOT(zoom_In()));
+    contextMenu.addAction(&zoomInAction);
+
+    QAction zoomOutAction("Zoom out", this);
+    connect(&zoomOutAction, SIGNAL(triggered()), this, SLOT(zoom_Out()));
+    contextMenu.addAction(&zoomOutAction);
+
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
     contextMenu.addAction(&zoomUndoAction);
@@ -207,14 +233,20 @@ void WPlot::ShowContextMenu(QPoint pos)
     connect(&zoomRedoAction, SIGNAL(triggered()), this, SLOT(zoom_Redo()));
     contextMenu.addAction(&zoomRedoAction);
 
+    QAction openDataAction("Open data", this);
+    contextMenu.addAction(&openDataAction);
+
+    QAction exportDataAction("Export data", this);
+    contextMenu.addAction(&exportDataAction);
+
     contextMenu.exec(mapToGlobal(pos));
 }
 
+// Cursor functions
 void WPlot::addCursor() {
     m_plotter->addCursor();
     updatePlot();
 }
-
 void WPlot::removeCursor() {
     m_plotter->removeCursor(this->selectedCursor);
     updatePlot();

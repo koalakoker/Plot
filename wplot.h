@@ -28,6 +28,8 @@ public slots:
     void updatePlot(void);
     void zoom_Undo(void);
     void zoom_Redo(void);
+    void zoom_In(void);
+    void zoom_Out(void);
 
 signals:
     void newPlotter(void);
