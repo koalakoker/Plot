@@ -45,8 +45,6 @@ void WPlot::addPoint(double t, SData y)
 
     y.prepend(t);
     m_data.append(y);
-
-
 }
 
 // Create plot
@@ -200,6 +198,14 @@ void WPlot::ShowContextMenu(QPoint pos)
         connect(&removeCursorAction, SIGNAL(triggered()), this, SLOT(removeCursor()));
         contextMenu.addAction(&removeCursorAction);
     }
+
+    QAction zoomUndoAction("Zoom Undo", this);
+    connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
+    contextMenu.addAction(&zoomUndoAction);
+
+    QAction zoomRedoAction("Zoom Redo", this);
+    connect(&zoomRedoAction, SIGNAL(triggered()), this, SLOT(zoom_Redo()));
+    contextMenu.addAction(&zoomRedoAction);
 
     contextMenu.exec(mapToGlobal(pos));
 }

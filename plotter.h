@@ -6,6 +6,8 @@
 
 #include "sdata.h"
 
+const Qt::GlobalColor plotColor[] = {Qt::black, Qt::blue, Qt::green, Qt::red, Qt::yellow, Qt::gray};
+
 class Plotter : public QObject {
     Q_OBJECT
 
@@ -90,6 +92,7 @@ private:
     style_t m_style;
 
     // Cursors
+    void plotValuesNearCursor(QPainter &p, int cur);
     QVector<qreal> m_cursorPos;
     QVector<QRect> m_cursorRect;
     int m_cursorDrag; // 0 none, index + 1 (zero based) if cursor index is dragged

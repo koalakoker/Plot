@@ -9,8 +9,6 @@
 // Plot
 QImage Plotter::plot()
 {
-    const Qt::GlobalColor plotColor[] = {Qt::black, Qt::blue, Qt::green, Qt::red, Qt::yellow, Qt::gray};
-
     QElapsedTimer t;
     t.start();
     QImage img(m_size, QImage::Format_ARGB32_Premultiplied);
@@ -126,23 +124,7 @@ QImage Plotter::plot()
         QRect   rect(topLeft, bottomRight);
         m_cursorRect.append(rect);
 
-        // Draw value at cursor text
-        QVector<double> values = getCursorValueTrack(cur);
-        QVectorIterator<double> itNumbers(values);
-        itNumbers.next(); // Skip first
-
-        int i = 0;
-        //for (double yValue: values) {
-        while (itNumbers.hasNext()) {
-            double yValue = itNumbers.next();
-            pen.setColor(plotColor[i]);
-
-            pen.setStyle(Qt::SolidLine);
-            p.setPen(pen);
-            p.drawText(map(curXpos, yValue) + QPointF(5,0), QString::number(yValue));
-            i++;
-
-        }
+        this->plotValuesNearCursor(p, cur);
     }
 
     /* Axis */
@@ -209,6 +191,24 @@ QImage Plotter::plot()
     //qDebug() << "plotted in" << t.elapsed() << "msec";
     return img;
 }
+
+void Plotter::plotValuesNearCursor(QPainter& p, int cur) {
+    QPen pen;
+    QVector<double> values = getCursorValueTrack(cur);
+    QVectorIterator<double> it(values);
+    qreal curXpos = it.next();
+    int i = 0;
+    while (it.hasNext()) {
+        double yValue = it.next();
+        pen.setColor(plotColor[i]);
+        pen.setStyle(Qt::SolidLine);
+        p.setPen(pen);
+        p.drawText(map(curXpos, yValue) + QPointF(5,0), QString::number(yValue));
+        i++;
+    }
+}
+
+
 QPointF Plotter::map(double x, double y)
 {
     return QPointF(mapX(x),mapY(y));
@@ -282,7 +282,7 @@ void Plotter::zoomXToCursors(QPoint point)
 
     std::sort(xPoints.begin(), xPoints.end());
 
-    for (i = 0; i < xPoints.size(); i++)
+    for (i = 0; i < (int)(xPoints.size()); i++)
     {
         if (xPos < xPoints.at(i))
         {
