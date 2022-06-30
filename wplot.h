@@ -2,6 +2,7 @@
 #define WPLOT_H
 
 #include <QWidget>
+#include <QLineEdit>
 
 #include "plotter.h"
 
@@ -30,8 +31,6 @@ public slots:
     void zoom_Redo(void);
     void zoom_In(void);
     void zoom_Out(void);
-    void open_data_file(void);
-    void export_data_file(void);
     void toggleAxisBottomLeft(void);
     void toggleAxisTopRigth(void);
 
@@ -46,11 +45,17 @@ private:
     bool m_movingUndo;
     double m_y_max = 0, m_y_min = 0;
     int selectedCursor;
+    QDialog* setCurPosDiag;
+    QLineEdit* curPosEdit;
 
 private slots:
     void ShowContextMenu(QPoint pos);
-    void addCursor();
-    void removeCursor();
+    void addCursor(void);
+    void removeCursor(void);
+    void setCursorPos(void);
+    void cursorNewPos(void);
+    void open_data_file(void);
+    void export_data_file(void);
 
 protected:
     void paintEvent(QPaintEvent *);

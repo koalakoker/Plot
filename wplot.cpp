@@ -7,6 +7,10 @@
 #include <QTextStream>
 #include <QRegularExpression>
 #include <QFileDialog>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QAbstractButton>
+#include <QPushButton>
 #include <QDebug>
 
 WPlot::WPlot(QWidget *parent) :
@@ -235,9 +239,13 @@ void WPlot::ShowContextMenu(QPoint pos)
     contextMenu.addAction(&addCursorAction);
 
     QAction removeCursorAction("Remove cursor", this);
+    QAction setCursorPosAction("Set cursor", this);
     if (onCursor) {
         connect(&removeCursorAction, SIGNAL(triggered()), this, SLOT(removeCursor()));
         contextMenu.addAction(&removeCursorAction);
+
+        connect(&setCursorPosAction, SIGNAL(triggered()), this, SLOT(setCursorPos()));
+        contextMenu.addAction(&setCursorPosAction);
     }
 
     QAction zoomInAction("Zoom in", this);
@@ -276,13 +284,44 @@ void WPlot::ShowContextMenu(QPoint pos)
 }
 
 // Cursor functions
-void WPlot::addCursor() {
+void WPlot::addCursor(void) {
     m_plotter->addCursor();
     updatePlot();
 }
-void WPlot::removeCursor() {
+void WPlot::removeCursor(void) {
     m_plotter->removeCursor(this->selectedCursor);
     updatePlot();
+}
+void WPlot::setCursorPos(void) {
+    this->setCurPosDiag = new QDialog();
+    QVBoxLayout *lay = new QVBoxLayout;
+    QLabel *label = new QLabel("Insert x position:");
+    this->curPosEdit = new QLineEdit();
+    QAbstractButton *bOk = new QPushButton("Ok");
+    QAbstractButton *bCancel = new QPushButton("Cancel");
+
+    QHBoxLayout *buttonsLay = new QHBoxLayout;
+    buttonsLay->addWidget(bOk);
+    buttonsLay->addWidget(bCancel);
+
+    lay->addWidget(label);
+    lay->addWidget(this->curPosEdit);
+    lay->addLayout(buttonsLay);
+
+    this->setCurPosDiag->setLayout(lay);
+    this->setCurPosDiag->show();
+    this->setCurPosDiag->connect(bOk,SIGNAL(clicked()),this,SLOT(cursorNewPos()));
+    this->setCurPosDiag->connect(bCancel,SIGNAL(clicked()),this->setCurPosDiag,SLOT(close()));
+}
+void WPlot::cursorNewPos(void) {
+    QString inputText = this->curPosEdit->text();
+    bool isValid;
+    qreal value = inputText.toDouble(&isValid);
+    if (isValid) {
+        this->m_plotter->setCursorPos(this->selectedCursor, value);
+        this->updatePlot();
+    }
+    this->setCurPosDiag->close();
 }
 
 // Events
