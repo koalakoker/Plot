@@ -11,29 +11,22 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mwplot.cpp \
     plotter.cpp \
     sdata.cpp \
-    wcursorinfo.cpp \
     wplot.cpp
 
 HEADERS += \
     mainwindow.h \
-    mwplot.h \
     plotter.h \
     sdata.h \
-    wcursorinfo.h \
     wplot.h
 
 FORMS += \
-    mainwindow.ui \
-    mwplot.ui \
-    wcursorinfo.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES += \
-    resource.qrc
+RESOURCES +=
