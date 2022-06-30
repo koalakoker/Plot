@@ -30,6 +30,8 @@ public slots:
     void zoom_Redo(void);
     void zoom_In(void);
     void zoom_Out(void);
+    void open_data_file(void);
+    void export_data_file(void);
 
 signals:
     void newPlotter(void);

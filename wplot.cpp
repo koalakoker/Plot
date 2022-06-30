@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QRegularExpression>
+#include <QFileDialog>
 #include <QDebug>
 
 WPlot::WPlot(QWidget *parent) :
@@ -199,6 +200,19 @@ void WPlot::zoom_Out(void)
     m_plotter->unZoom();
     this->updatePlot();
 }
+void WPlot::open_data_file(void)
+{
+    QString fileName = QFileDialog::getOpenFileName(this,"Open data file","","*.*");
+    if (fileName != "")
+    {
+        this->loadDataFile(fileName);
+    }
+}
+void WPlot::export_data_file(void)
+{
+    QString fileName = QFileDialog::getSaveFileName(this,"Export data file","","*.*");
+    this->saveDataFile(fileName);
+}
 
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
@@ -234,9 +248,11 @@ void WPlot::ShowContextMenu(QPoint pos)
     contextMenu.addAction(&zoomRedoAction);
 
     QAction openDataAction("Open data", this);
+    connect(&openDataAction, SIGNAL(triggered()), this, SLOT(open_data_file()));
     contextMenu.addAction(&openDataAction);
 
     QAction exportDataAction("Export data", this);
+    connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
     contextMenu.addAction(&exportDataAction);
 
     contextMenu.exec(mapToGlobal(pos));
