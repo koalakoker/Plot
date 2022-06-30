@@ -32,6 +32,8 @@ public slots:
     void zoom_Out(void);
     void open_data_file(void);
     void export_data_file(void);
+    void toggleAxisBottomLeft(void);
+    void toggleAxisTopRigth(void);
 
 signals:
     void newPlotter(void);

@@ -19,7 +19,6 @@ WPlot::WPlot(QWidget *parent) :
     setMouseTracking(true);
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
-
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(ShowContextMenu(QPoint)));
 }
@@ -213,6 +212,16 @@ void WPlot::export_data_file(void)
     QString fileName = QFileDialog::getSaveFileName(this,"Export data file","","*.*");
     this->saveDataFile(fileName);
 }
+void WPlot::toggleAxisBottomLeft(void) {
+    this->m_plotter->m_axsisBottom ^= 1;
+    this->m_plotter->m_axsisLeft ^= 1;
+    this->updatePlot();
+}
+void WPlot::toggleAxisTopRigth(void) {
+    this->m_plotter->m_axsisTop ^= 1;
+    this->m_plotter->m_axsisRight ^= 1;
+    this->updatePlot();
+}
 
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
@@ -254,6 +263,14 @@ void WPlot::ShowContextMenu(QPoint pos)
     QAction exportDataAction("Export data", this);
     connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
     contextMenu.addAction(&exportDataAction);
+
+    QAction toggleAxisBottomLeftAction("Toggle axis bottom left", this);
+    connect(&toggleAxisBottomLeftAction, SIGNAL(triggered()), this, SLOT(toggleAxisBottomLeft()));
+    contextMenu.addAction(&toggleAxisBottomLeftAction);
+
+    QAction toggleAxisTopRigthAction("Toggle axis top rigth", this);
+    connect(&toggleAxisTopRigthAction, SIGNAL(triggered()), this, SLOT(toggleAxisTopRigth()));
+    contextMenu.addAction(&toggleAxisTopRigthAction);
 
     contextMenu.exec(mapToGlobal(pos));
 }
