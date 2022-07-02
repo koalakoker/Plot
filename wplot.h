@@ -25,6 +25,13 @@ public:
     Plotter *m_plotter;
     QString m_fileName;
 
+    typedef enum {
+        Normal,
+        Zoom,
+        VZoom,
+        HZoom
+    } PlotMode_t;
+
 public slots:
     void updatePlot(void);
     void zoom_Undo(void);
@@ -44,6 +51,7 @@ private:
     QPoint m_lastPoint;
     bool m_movingUndo;
     double m_y_max = 0, m_y_min = 0;
+    PlotMode_t plotMode = Normal;
     int selectedCursor;
     QDialog* setCurPosDiag;
     QLineEdit* curPosEdit;
@@ -58,6 +66,8 @@ private slots:
     void export_data_file(void);
 
 protected:
+    void keyPressEvent(QKeyEvent* event);
+    void keyReleaseEvent(QKeyEvent* event);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent* event);
     void mouseDoubleClickEvent(QMouseEvent* event);

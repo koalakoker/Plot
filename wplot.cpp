@@ -1,4 +1,5 @@
 #include "wplot.h"
+#include "cursors.h"
 
 #include <QGestureEvent>
 #include <QMouseEvent>
@@ -16,6 +17,7 @@
 WPlot::WPlot(QWidget *parent) :
     QWidget(parent), m_plotter(NULL)
 {
+    setFocusPolicy(Qt::StrongFocus);
     this->wParent = parent;
     m_drag = false;
 
@@ -25,6 +27,8 @@ WPlot::WPlot(QWidget *parent) :
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(ShowContextMenu(QPoint)));
+
+    this->setCursor(Qt::ArrowCursor);
 }
 WPlot::~WPlot()
 {
@@ -187,21 +191,26 @@ void WPlot::zoom_Redo(void)
 }
 void WPlot::zoom_In(void)
 {
-    Plotter* m_plotter = this->m_plotter;
-    if (!m_plotter)
-        return;
-    m_plotter->AddUndoStatus();
-    m_plotter->zoomXToCursors(QPoint(this->size().width()/2,this->size().height()/2));
-    this->updatePlot();
+//    Plotter* m_plotter = this->m_plotter;
+//    if (!m_plotter)
+//        return;
+//    m_plotter->AddUndoStatus();
+//    m_plotter->zoomXToCursors(QPoint(this->size().width()/2,this->size().height()/2));
+//    this->updatePlot();
+
+    this->plotMode = Zoom;
+    setCursor(Cursors::get(Cursors::ZoomIn));
 }
 void WPlot::zoom_Out(void)
 {
-    Plotter* m_plotter = this->m_plotter;
-    if (!m_plotter)
-        return;
-    m_plotter->AddUndoStatus();
-    m_plotter->unZoom();
-    this->updatePlot();
+//    Plotter* m_plotter = this->m_plotter;
+//    if (!m_plotter)
+//        return;
+//    m_plotter->AddUndoStatus();
+//    m_plotter->unZoom();
+//    this->updatePlot();
+    setCursor(Cursors::get(Cursors::ZoomOut));
+
 }
 void WPlot::open_data_file(void)
 {
@@ -330,26 +339,54 @@ void WPlot::paintEvent(QPaintEvent *)
     QPainter p(this);
     p.drawImage(QPoint(0, 0), m_plotImage);
 }
+void WPlot::keyPressEvent(QKeyEvent* event) {
+    qDebug() << event;
+    QWidget::keyPressEvent(event);
+};
+void WPlot::keyReleaseEvent(QKeyEvent* event) {
+    qDebug() << event;
+    QWidget::keyReleaseEvent(event);
+};
 void WPlot::mousePressEvent(QMouseEvent* event)
 {
-    if (!m_plotter)
-        return;
+    if (!m_plotter) return;
 
-    if (event->button() == dragButton)
-    {
-        int selected = 0;
-        m_lastPoint = event->pos();
-        if (m_plotter->onCursor(m_lastPoint, selected, true))
+    switch (this->plotMode) {
+    case Normal:
         {
+            if (event->button() == dragButton)
+            {
+                int selected = 0;
+                m_lastPoint = event->pos();
+                if (m_plotter->onCursor(m_lastPoint, selected, true))
+                {
 
+                }
+                else
+                {
+                    m_movingUndo = true;
+                    m_drag = true;
+                }
+
+            }
+            break;
         }
-        else
+    case Zoom:
         {
-            m_movingUndo = true;
-            m_drag = true;
+            if (event->button() == dragButton) {
+                m_plotter->AddUndoStatus();
+                m_plotter->zoomXToCursors(event->pos());
+                updatePlot();
+            }
+            break;
         }
-
+    default:
+        {
+            break;
+        }
     }
+
+
 }
 void WPlot::mouseDoubleClickEvent(QMouseEvent* event)
 {
@@ -377,41 +414,57 @@ void WPlot::mouseReleaseEvent(QMouseEvent* event)
 }
 void WPlot::mouseMoveEvent(QMouseEvent* event)
 {
-    if (!m_plotter)
-        return;
-    if (m_drag)
-    {
-        if (m_movingUndo) // Add undo to be done only once
+    switch (this->plotMode) {
+    case Normal:
         {
-            m_plotter->AddUndoStatus();
-            m_movingUndo = false;
+            if (!m_plotter)
+                return;
+            if (m_drag)
+            {
+                if (m_movingUndo) // Add undo to be done only once
+                {
+                    m_plotter->AddUndoStatus();
+                    m_movingUndo = false;
+                }
+
+                QPoint delta = m_lastPoint - event->pos();
+                m_lastPoint = event->pos();
+                m_plotter->scrollXpixel( delta.x());
+                m_plotter->scrollYpixel(-delta.y());
+                updatePlot();
+            }
+
+            int index = m_plotter->getCursorDragged();
+            if (index != 0)
+            {
+                QPoint delta =  event->pos() - m_lastPoint;
+                m_lastPoint = event->pos();
+                m_plotter->cursorScrollPixel(index-1, delta.x());
+                updatePlot();
+            }
+
+            int selected = 0;
+            if (m_plotter->onCursor(event->pos(), selected, false))
+            {
+                this->setCursor(Qt::SizeHorCursor);
+            }
+            else
+            {
+                this->setCursor(Qt::ArrowCursor);
+            }
+            break;
         }
-
-        QPoint delta = m_lastPoint - event->pos();
-        m_lastPoint = event->pos();
-        m_plotter->scrollXpixel( delta.x());
-        m_plotter->scrollYpixel(-delta.y());
-        updatePlot();
+    case Zoom:
+        {
+            break;
+        }
+    default:
+        {
+            break;
+        }
     }
 
-    int index = m_plotter->getCursorDragged();
-    if (index != 0)
-    {
-        QPoint delta =  event->pos() - m_lastPoint;
-        m_lastPoint = event->pos();
-        m_plotter->cursorScrollPixel(index-1, delta.x());
-        updatePlot();
-    }
 
-    int selected = 0;
-    if (m_plotter->onCursor(event->pos(), selected, false))
-    {
-        this->setCursor(Qt::SizeHorCursor);
-    }
-    else
-    {
-        this->setCursor(Qt::ArrowCursor);
-    }
 }
 void WPlot::wheelEvent(QWheelEvent* event)
 {
