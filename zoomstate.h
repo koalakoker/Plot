@@ -10,6 +10,7 @@ public:
 
     void mousePressEvent(WPlot& plot, QMouseEvent* event);
     void mouseMoveEvent(WPlot& plot, QMouseEvent* event);
+    void setCursor(WPlot& plot);
 };
 
 #endif // ZOOMSTATE_H

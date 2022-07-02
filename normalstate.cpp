@@ -59,3 +59,7 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         plot.setCursor(Qt::ArrowCursor);
     }
 }
+
+void NormalState::setCursor(WPlot& plot) {
+    plot.setCursor(Qt::ArrowCursor);
+}

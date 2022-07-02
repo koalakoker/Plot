@@ -1,5 +1,4 @@
 #include "wplot.h"
-#include "cursors.h"
 
 #include <QGestureEvent>
 #include <QMouseEvent>
@@ -28,8 +27,8 @@ WPlot::WPlot(QWidget *parent) :
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(ShowContextMenu(QPoint)));
 
-    this->setCursor(Qt::ArrowCursor);
     this->state = &this->normalState;
+    this->state->setCursor(*this);
 }
 WPlot::~WPlot()
 {
@@ -199,8 +198,8 @@ void WPlot::zoom_In(void)
 //    m_plotter->zoomXToCursors(QPoint(this->size().width()/2,this->size().height()/2));
 //    this->updatePlot();
 
-    this->state = &this->zoomState;;
-    setCursor(Cursors::get(Cursors::ZoomIn));
+    this->state = &this->zoomState;
+    this->state->setCursor(*this);
 }
 void WPlot::zoom_Out(void)
 {
@@ -210,7 +209,7 @@ void WPlot::zoom_Out(void)
 //    m_plotter->AddUndoStatus();
 //    m_plotter->unZoom();
 //    this->updatePlot();
-    setCursor(Cursors::get(Cursors::ZoomOut));
+    //setCursor(Cursors::get(Cursors::ZoomOut));
 
 }
 void WPlot::open_data_file(void)
@@ -355,16 +354,14 @@ void WPlot::mousePressEvent(QMouseEvent* event)
 }
 void WPlot::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    if (!m_plotter)
-        return;
+    if (!m_plotter) return;
     m_plotter->AddUndoStatus();
     m_plotter->zoomXToCursors(event->pos());
     updatePlot();
 }
 void WPlot::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (!m_plotter)
-        return;
+    if (!m_plotter) return;
     if (event->button() == dragButton)
     {
         if (m_drag)
@@ -379,8 +376,7 @@ void WPlot::mouseReleaseEvent(QMouseEvent* event)
 }
 void WPlot::mouseMoveEvent(QMouseEvent* event)
 {
-    if (!m_plotter)
-        return;
+    if (!m_plotter) return;
     this->state->mouseMoveEvent(*this, event);
 }
 void WPlot::wheelEvent(QWheelEvent* event)

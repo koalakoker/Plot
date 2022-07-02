@@ -1,5 +1,6 @@
 #include "zoomstate.h"
 #include "wplot.h"
+#include "cursors.h"
 
 ZoomState::ZoomState()
 {
@@ -16,4 +17,8 @@ void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 
 void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 
+}
+
+void ZoomState::setCursor(WPlot& plot) {
+    plot.setCursor(Cursors::get(Cursors::ZoomIn));
 }
