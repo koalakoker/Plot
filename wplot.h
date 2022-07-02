@@ -5,6 +5,9 @@
 #include <QLineEdit>
 
 #include "plotter.h"
+#include "state.h"
+#include "normalstate.h"
+#include "zoomstate.h"
 
 class WPlot : public QWidget
 {
@@ -25,12 +28,9 @@ public:
     Plotter *m_plotter;
     QString m_fileName;
 
-    typedef enum {
-        Normal,
-        Zoom,
-        VZoom,
-        HZoom
-    } PlotMode_t;
+    QPoint m_lastPoint;
+    bool m_movingUndo;
+    bool m_drag;
 
 public slots:
     void updatePlot(void);
@@ -47,14 +47,15 @@ signals:
 private:
     QVector<SData> m_data;
     QImage m_plotImage;
-    bool m_drag;
-    QPoint m_lastPoint;
-    bool m_movingUndo;
+
     double m_y_max = 0, m_y_min = 0;
-    PlotMode_t plotMode = Normal;
     int selectedCursor;
     QDialog* setCurPosDiag;
     QLineEdit* curPosEdit;
+
+    State* state;
+    NormalState normalState;
+    ZoomState zoomState;
 
 private slots:
     void ShowContextMenu(QPoint pos);

@@ -12,16 +12,22 @@ SOURCES += \
     cursors.cpp \
     main.cpp \
     mainwindow.cpp \
+    normalstate.cpp \
     plotter.cpp \
     sdata.cpp \
-    wplot.cpp
+    state.cpp \
+    wplot.cpp \
+    zoomstate.cpp
 
 HEADERS += \
     cursors.h \
     mainwindow.h \
+    normalstate.h \
     plotter.h \
     sdata.h \
-    wplot.h
+    state.h \
+    wplot.h \
+    zoomstate.h
 
 FORMS += \
     mainwindow.ui
