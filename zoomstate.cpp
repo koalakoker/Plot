@@ -9,7 +9,7 @@ ZoomState::ZoomState()
 
 void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
-        if (this->shiftKeyPressed)  {
+        if (this->m_shiftKeyPressed)  {
             // Zoom Out
             plot.m_plotter->AddUndoStatus();
             plot.m_plotter->unZoom();
@@ -24,12 +24,14 @@ void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     }
 }
 
+void ZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {}
+
 void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 
 }
 
 void ZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
-    if (this->shiftKeyPressed)  {
+    if (this->m_shiftKeyPressed)  {
         // Zoom Out
         plot.m_plotter->AddUndoStatus();
         plot.m_plotter->unZoom();
@@ -50,14 +52,14 @@ void ZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
         event->accept();
     }
     if (event->key() == Qt::Key_Shift) {
-        this->shiftKeyPressed = true;
+        this->m_shiftKeyPressed = true;
         plot.setCursor(Cursors::get(Cursors::ZoomOut));
     }
 }
 
 void ZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {
     if (event->key() == Qt::Key_Shift) {
-        this->shiftKeyPressed = false;
+        this->m_shiftKeyPressed = false;
         plot.setCursor(Cursors::get(Cursors::ZoomIn));
     }
 }

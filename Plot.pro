@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     cursors.cpp \
+    hzoomstate.cpp \
     main.cpp \
     mainwindow.cpp \
     normalstate.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     cursors.h \
+    hzoomstate.h \
     mainwindow.h \
     normalstate.h \
     plotter.h \

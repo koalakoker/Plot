@@ -9,6 +9,7 @@ public:
     ZoomState();
 
     void mousePressEvent(WPlot& plot, QMouseEvent* event);
+    void mouseReleaseEvent(WPlot& plot, QMouseEvent* event);
     void mouseMoveEvent(WPlot& plot, QMouseEvent* event);
     void mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event);
     void keyPressEvent(WPlot& plot, QKeyEvent* event);
@@ -16,7 +17,7 @@ public:
     void setCursor(WPlot& plot);
 
 private:
-    bool shiftKeyPressed;
+    bool m_shiftKeyPressed = false;;
 };
 
 #endif // ZOOMSTATE_H

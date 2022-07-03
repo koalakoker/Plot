@@ -18,7 +18,6 @@ WPlot::WPlot(QWidget *parent) :
 {
     setFocusPolicy(Qt::StrongFocus);
     this->wParent = parent;
-    m_drag = false;
 
     grabGesture(Qt::PinchGesture);
     setMouseTracking(true);
@@ -194,6 +193,11 @@ void WPlot::zoom(void)
     this->state = &this->zoomState;
     this->state->setCursor(*this);
 }
+void WPlot::hZoom(void)
+{
+    this->state = &this->hZoomState;
+    this->state->setCursor(*this);
+}
 
 void WPlot::open_data_file(void)
 {
@@ -243,6 +247,10 @@ void WPlot::ShowContextMenu(QPoint pos)
     QAction zoomAction("Zoom", this);
     connect(&zoomAction, SIGNAL(triggered()), this, SLOT(zoom()));
     contextMenu.addAction(&zoomAction);
+
+    QAction hZoomAction("Horizontal zoom", this);
+    connect(&hZoomAction, SIGNAL(triggered()), this, SLOT(hZoom()));
+    contextMenu.addAction(&hZoomAction);
 
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
@@ -340,17 +348,7 @@ void WPlot::mouseDoubleClickEvent(QMouseEvent* event)
 void WPlot::mouseReleaseEvent(QMouseEvent* event)
 {
     if (!m_plotter) return;
-    if (event->button() == dragButton)
-    {
-        if (m_drag)
-        {
-            m_drag = false;
-        }
-        if (m_plotter->getCursorDragged() != 0)
-        {
-            m_plotter->releaseCursor();
-        }
-    }
+    this->state->mouseReleaseEvent(*this, event);
 }
 void WPlot::mouseMoveEvent(QMouseEvent* event)
 {

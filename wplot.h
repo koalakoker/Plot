@@ -8,6 +8,7 @@
 #include "state.h"
 #include "normalstate.h"
 #include "zoomstate.h"
+#include "hzoomstate.h"
 
 class WPlot : public QWidget
 {
@@ -21,26 +22,26 @@ public:
     void loadDataFile(QString fileName);
     void saveDataFile(QString fileName);
 
-    const Qt::MouseButton dragButton = Qt::LeftButton;
-    const Qt::MouseButton addCursorButton = Qt::RightButton;
+    //const Qt::MouseButton dragButton = Qt::LeftButton;
+    //const Qt::MouseButton addCursorButton = Qt::RightButton;
 
     QWidget* wParent;
     Plotter *m_plotter;
     QString m_fileName;
 
     QPoint m_lastPoint;
-    bool m_movingUndo;
-    bool m_drag;
 
     State* state;
     NormalState normalState;
     ZoomState zoomState;
+    HZoomState hZoomState;
 
 public slots:
     void updatePlot(void);
     void zoom_Undo(void);
     void zoom_Redo(void);
     void zoom(void);
+    void hZoom(void);
     void toggleAxisBottomLeft(void);
     void toggleAxisTopRigth(void);
 

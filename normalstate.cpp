@@ -7,7 +7,7 @@ NormalState::NormalState()
 }
 
 void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
-    if (event->button() == plot.dragButton)
+    if (event->button() == Qt::LeftButton)
     {
         int selected = 0;
         plot.m_lastPoint = event->pos();
@@ -17,20 +17,34 @@ void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
         }
         else
         {
-            plot.m_movingUndo = true;
-            plot.m_drag = true;
+            m_movingUndo = true;
+            m_drag = true;
         }
 
     }
 }
 
-void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
-    if (plot.m_drag)
+void NormalState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton)
     {
-        if (plot.m_movingUndo) // Add undo to be done only once
+        if (m_drag)
+        {
+            m_drag = false;
+        }
+        if (plot.m_plotter->getCursorDragged() != 0)
+        {
+            plot.m_plotter->releaseCursor();
+        }
+    }
+}
+
+void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
+    if (m_drag)
+    {
+        if (m_movingUndo) // Add undo to be done only once
         {
             plot.m_plotter->AddUndoStatus();
-            plot.m_movingUndo = false;
+            m_movingUndo = false;
         }
 
         QPoint delta = plot.m_lastPoint - event->pos();
