@@ -60,6 +60,13 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     }
 }
 
+void NormalState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
+    // Zoom in
+    plot.m_plotter->AddUndoStatus();
+    plot.m_plotter->zoomXToCursors(event->pos());
+    plot.updatePlot();
+}
+
 void NormalState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
     event->ignore();
 }

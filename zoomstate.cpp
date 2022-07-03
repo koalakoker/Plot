@@ -28,6 +28,21 @@ void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 
 }
 
+void ZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
+    if (this->shiftKeyPressed)  {
+        // Zoom Out
+        plot.m_plotter->AddUndoStatus();
+        plot.m_plotter->unZoom();
+        plot.updatePlot();
+
+    } else {
+        // Zoom in
+        plot.m_plotter->AddUndoStatus();
+        plot.m_plotter->zoomXToCursors(event->pos());
+        plot.updatePlot();
+    }
+}
+
 void ZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
     if (event->key() == Qt::Key_Escape) {
         plot.state = &plot.normalState;

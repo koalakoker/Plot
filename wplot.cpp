@@ -335,7 +335,7 @@ void WPlot::mousePressEvent(QMouseEvent* event)
 }
 void WPlot::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    qDebug() << "All states double click" << event;
+    this->state->mouseDoubleClickEvent(*this, event);
 }
 void WPlot::mouseReleaseEvent(QMouseEvent* event)
 {
