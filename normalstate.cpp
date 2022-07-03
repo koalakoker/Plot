@@ -60,6 +60,10 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     }
 }
 
+void NormalState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
+    event->ignore();
+}
+
 void NormalState::setCursor(WPlot& plot) {
     plot.setCursor(Qt::ArrowCursor);
 }

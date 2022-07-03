@@ -8,15 +8,43 @@ ZoomState::ZoomState()
 }
 
 void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
-    if (event->button() == plot.dragButton) {
-        plot.m_plotter->AddUndoStatus();
-        plot.m_plotter->zoomXToCursors(event->pos());
-        plot.updatePlot();
+    if (event->button() == Qt::LeftButton) {
+        if (this->shiftKeyPressed)  {
+            // Zoom Out
+            plot.m_plotter->AddUndoStatus();
+            plot.m_plotter->unZoom();
+            plot.updatePlot();
+
+        } else {
+            // Zoom in
+            plot.m_plotter->AddUndoStatus();
+            plot.m_plotter->zoomXToCursors(event->pos());
+            plot.updatePlot();
+        }
     }
 }
 
 void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 
+}
+
+void ZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
+    if (event->key() == Qt::Key_Escape) {
+        plot.state = &plot.normalState;
+        plot.state->setCursor(plot);
+        event->accept();
+    }
+    if (event->key() == Qt::Key_Shift) {
+        this->shiftKeyPressed = true;
+        plot.setCursor(Cursors::get(Cursors::ZoomOut));
+    }
+}
+
+void ZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {
+    if (event->key() == Qt::Key_Shift) {
+        this->shiftKeyPressed = false;
+        plot.setCursor(Cursors::get(Cursors::ZoomIn));
+    }
 }
 
 void ZoomState::setCursor(WPlot& plot) {

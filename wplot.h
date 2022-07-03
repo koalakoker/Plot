@@ -32,12 +32,15 @@ public:
     bool m_movingUndo;
     bool m_drag;
 
+    State* state;
+    NormalState normalState;
+    ZoomState zoomState;
+
 public slots:
     void updatePlot(void);
     void zoom_Undo(void);
     void zoom_Redo(void);
-    void zoom_In(void);
-    void zoom_Out(void);
+    void zoom(void);
     void toggleAxisBottomLeft(void);
     void toggleAxisTopRigth(void);
 
@@ -52,10 +55,6 @@ private:
     int selectedCursor;
     QDialog* setCurPosDiag;
     QLineEdit* curPosEdit;
-
-    State* state;
-    NormalState normalState;
-    ZoomState zoomState;
 
 private slots:
     void ShowContextMenu(QPoint pos);

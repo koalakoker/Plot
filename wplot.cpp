@@ -189,29 +189,12 @@ void WPlot::zoom_Redo(void)
     m_plotter->Redo();
     updatePlot();
 }
-void WPlot::zoom_In(void)
+void WPlot::zoom(void)
 {
-//    Plotter* m_plotter = this->m_plotter;
-//    if (!m_plotter)
-//        return;
-//    m_plotter->AddUndoStatus();
-//    m_plotter->zoomXToCursors(QPoint(this->size().width()/2,this->size().height()/2));
-//    this->updatePlot();
-
     this->state = &this->zoomState;
     this->state->setCursor(*this);
 }
-void WPlot::zoom_Out(void)
-{
-//    Plotter* m_plotter = this->m_plotter;
-//    if (!m_plotter)
-//        return;
-//    m_plotter->AddUndoStatus();
-//    m_plotter->unZoom();
-//    this->updatePlot();
-    //setCursor(Cursors::get(Cursors::ZoomOut));
 
-}
 void WPlot::open_data_file(void)
 {
     QString fileName = QFileDialog::getOpenFileName(this,"Open data file","","*.*");
@@ -257,13 +240,9 @@ void WPlot::ShowContextMenu(QPoint pos)
         contextMenu.addAction(&setCursorPosAction);
     }
 
-    QAction zoomInAction("Zoom in", this);
-    connect(&zoomInAction, SIGNAL(triggered()), this, SLOT(zoom_In()));
-    contextMenu.addAction(&zoomInAction);
-
-    QAction zoomOutAction("Zoom out", this);
-    connect(&zoomOutAction, SIGNAL(triggered()), this, SLOT(zoom_Out()));
-    contextMenu.addAction(&zoomOutAction);
+    QAction zoomAction("Zoom", this);
+    connect(&zoomAction, SIGNAL(triggered()), this, SLOT(zoom()));
+    contextMenu.addAction(&zoomAction);
 
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
@@ -340,11 +319,13 @@ void WPlot::paintEvent(QPaintEvent *)
     p.drawImage(QPoint(0, 0), m_plotImage);
 }
 void WPlot::keyPressEvent(QKeyEvent* event) {
-    qDebug() << event;
-    QWidget::keyPressEvent(event);
+    this->state->keyPressEvent(*this, event);
+    if (!event->isAccepted()) {
+        QWidget::keyPressEvent(event);
+    }
 };
 void WPlot::keyReleaseEvent(QKeyEvent* event) {
-    qDebug() << event;
+    this->state->keyReleaseEvent(*this, event);
     QWidget::keyReleaseEvent(event);
 };
 void WPlot::mousePressEvent(QMouseEvent* event)
@@ -354,10 +335,7 @@ void WPlot::mousePressEvent(QMouseEvent* event)
 }
 void WPlot::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    if (!m_plotter) return;
-    m_plotter->AddUndoStatus();
-    m_plotter->zoomXToCursors(event->pos());
-    updatePlot();
+    qDebug() << "All states double click" << event;
 }
 void WPlot::mouseReleaseEvent(QMouseEvent* event)
 {

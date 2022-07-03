@@ -11,6 +11,9 @@ public:
     State();
     virtual void mousePressEvent(WPlot& plot, QMouseEvent* event) = 0;
     virtual void mouseMoveEvent(WPlot& plot, QMouseEvent* event) = 0;
+    virtual void keyPressEvent(WPlot& plot, QKeyEvent* event) = 0;
+    virtual void keyReleaseEvent(WPlot& plot, QKeyEvent* event) = 0;
+
     virtual void setCursor(WPlot& plot) = 0;
 };
 
