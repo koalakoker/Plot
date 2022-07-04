@@ -9,27 +9,27 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    cursors.cpp \
-    hzoomstate.cpp \
     main.cpp \
     mainwindow.cpp \
-    normalstate.cpp \
-    plotter.cpp \
-    sdata.cpp \
-    state.cpp \
-    wplot.cpp \
-    zoomstate.cpp
+    wplot/cursors.cpp \
+    wplot/plotter.cpp \
+    wplot/sdata.cpp \
+    wplot/state/hzoomstate.cpp \
+    wplot/state/normalstate.cpp \
+    wplot/state/state.cpp \
+    wplot/state/zoomstate.cpp \
+    wplot/wplot.cpp
 
 HEADERS += \
-    cursors.h \
-    hzoomstate.h \
     mainwindow.h \
-    normalstate.h \
-    plotter.h \
-    sdata.h \
-    state.h \
-    wplot.h \
-    zoomstate.h
+    wplot/cursors.h \
+    wplot/plotter.h \
+    wplot/sdata.h \
+    wplot/state/hzoomstate.h \
+    wplot/state/normalstate.h \
+    wplot/state/state.h \
+    wplot/state/zoomstate.h \
+    wplot/wplot.h
 
 FORMS += \
     mainwindow.ui
@@ -40,4 +40,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    resource.qrc
+    wplot/resource.qrc
+
+DISTFILES += \
+    wplot/png/icons8-zoom-in-24.png \
+    wplot/png/icons8-zoom-in-30.png \
+    wplot/png/icons8-zoom-out-24.png

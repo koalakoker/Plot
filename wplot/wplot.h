@@ -4,11 +4,11 @@
 #include <QWidget>
 #include <QLineEdit>
 
-#include "plotter.h"
-#include "state.h"
-#include "normalstate.h"
-#include "zoomstate.h"
-#include "hzoomstate.h"
+#include "wplot/plotter.h"
+#include "wplot/state/state.h"
+#include "wplot/state/normalstate.h"
+#include "wplot/state/zoomstate.h"
+#include "wplot/state/hzoomstate.h"
 
 class WPlot : public QWidget
 {

@@ -1,4 +1,4 @@
-#include "plotter.h"
+#include "wplot/plotter.h"
 
 #include <algorithm>
 #include <QFontMetrics>

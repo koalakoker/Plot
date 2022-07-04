@@ -1,4 +1,4 @@
-#include "sdata.h"
+#include "wplot/sdata.h"
 
 SData::SData()
 {

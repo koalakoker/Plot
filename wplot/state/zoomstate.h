@@ -1,7 +1,7 @@
 #ifndef ZOOMSTATE_H
 #define ZOOMSTATE_H
 
-#include "state.h"
+#include "wplot/state/state.h"
 
 class ZoomState : public State
 {

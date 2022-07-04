@@ -1,5 +1,5 @@
-#include "normalstate.h"
-#include "wplot.h"
+#include "wplot/state/normalstate.h"
+#include "wplot/wplot.h"
 
 NormalState::NormalState()
 {

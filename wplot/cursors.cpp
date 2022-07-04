@@ -1,4 +1,4 @@
-#include "cursors.h"
+#include "wplot/cursors.h"
 
 #include <QDebug>
 

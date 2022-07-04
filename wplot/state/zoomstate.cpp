@@ -1,6 +1,6 @@
-#include "zoomstate.h"
-#include "wplot.h"
-#include "cursors.h"
+#include "wplot/state/zoomstate.h"
+#include "wplot/wplot.h"
+#include "wplot/cursors.h"
 
 ZoomState::ZoomState()
 {

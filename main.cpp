@@ -1,5 +1,6 @@
 #include "mainwindow.h"
-#include "wplot.h"
+#include "wplot/sdata.h"
+#include "wplot/wplot.h"
 
 #include <QApplication>
 

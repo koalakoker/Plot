@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QPainter>
 
-#include "sdata.h"
+#include "wplot/sdata.h"
 
 const Qt::GlobalColor plotColor[] = {Qt::black, Qt::blue, Qt::green, Qt::red, Qt::yellow, Qt::gray};
 

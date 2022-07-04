@@ -1,4 +1,4 @@
-#include "wplot.h"
+#include "wplot/wplot.h"
 
 #include <QGestureEvent>
 #include <QMouseEvent>
