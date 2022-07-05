@@ -12,13 +12,13 @@ QCursor Cursors::get(Cursor_t type) {
     case ZoomIn:
     {
         QPixmap cursor_pixmap = QPixmap(":/png/icons8-zoom-in-24.png");
-        cur = QCursor(cursor_pixmap, 0, 0);
+        cur = QCursor(cursor_pixmap, 10, 10);
     }
         break;
     case ZoomOut:
     {
         QPixmap cursor_pixmap = QPixmap(":/png/icons8-zoom-out-24.png");
-        cur = QCursor(cursor_pixmap, 0, 0);
+        cur = QCursor(cursor_pixmap, 10, 10);
     }
         break;
     default:

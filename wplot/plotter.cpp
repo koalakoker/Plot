@@ -332,7 +332,6 @@ void Plotter::zoomXToZoomRange() {
         left = rigth;
         rigth = tmp;
     }
-    qDebug() << "Left:" << left << " Right:" << rigth;
     m_range.setLeft(left);
     m_range.setRight(rigth);
 }
