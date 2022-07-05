@@ -38,6 +38,7 @@ public:
     void zoomXToCursors(QPoint point);
     void unZoom(void);
     void startZoomTrack(QPoint point);
+    void zoomTrackScrollPixelX(int pix);
 
     // Resize
     void setSize(QSize size) {m_size = size;}

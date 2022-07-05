@@ -328,8 +328,13 @@ void Plotter::unZoom(void)
     zoomX(-5);
 }
 void Plotter::startZoomTrack(QPoint point) {
-    this->zoomTrackVisible[0] = true;
-    this->zoomTracksPos[0] = invMapX(point.x());
+    for (int i = 0;  i < 2; i++) {
+        this->zoomTrackVisible[i] = true;
+        this->zoomTracksPos[i] = invMapX(point.x());
+    }
+}
+void Plotter::zoomTrackScrollPixelX(int pix) {
+    this->zoomTracksPos[1] += (m_range.width()  * (qreal)(pix))/(qreal)(m_size.width ());
 }
 
 // Cursors
