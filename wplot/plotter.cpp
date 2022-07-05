@@ -7,17 +7,7 @@
 #include <QDebug>
 
 // Plot
-QImage Plotter::plot()
-{
-    QElapsedTimer t;
-    t.start();
-    QImage img(m_size, QImage::Format_ARGB32_Premultiplied);
-    img.fill(Qt::white);
-    QPainter p(&img);
-    QPen pen(Qt::darkBlue);
-    pen.setWidth(1);
-    p.setPen(pen);
-
+void Plotter::PlotData(QPainter &p, QPen &pen) {
     if (m_data.size() != 0)
     {
         int trackNum = m_data[0].size();
@@ -100,6 +90,8 @@ QImage Plotter::plot()
         //p.drawText(10,20,QString("Rect: Top %1, Bottom %2").arg(_range.top()).arg(_range.bottom()));
     }
 
+}
+void Plotter::PlotCursor(QPainter& p, QPen& pen) {
     /* Cursors */
     int curLabelYPos = 30;
 
@@ -126,7 +118,8 @@ QImage Plotter::plot()
 
         this->plotValuesNearCursor(p, cur);
     }
-
+}
+void Plotter::PlotAxis(QPainter &p, QPen &pen) {
     /* Axis */
     int hDivNum = 5;
     int vDivNum = 5;
@@ -187,8 +180,36 @@ QImage Plotter::plot()
             p.drawText(QPoint(w - divLen - hSpacer - sz.width(), y + (sz.height()/2) - hSpacer) , valueStr);
         }
     }
+}
+void Plotter::PlotZoomTracks(QPainter& p, QPen& pen) {
+    for (int i = 0; i < 2; i++) {
+        if (this->zoomTrackVisible[i]) {
+            qreal curXpos       = this->zoomTracksPos[i];
+            qreal curYposTop    = m_range.y();
+            qreal curYposBottom = m_range.y()+m_range.height();
 
-    //qDebug() << "plotted in" << t.elapsed() << "msec";
+            pen.setColor(Qt::black);
+            p.setPen(pen);
+
+            p.drawLine(map(curXpos, curYposTop), map(curXpos, curYposBottom));
+        }
+    }
+}
+
+QImage Plotter::plot()
+{
+    QImage img(m_size, QImage::Format_ARGB32_Premultiplied);
+    img.fill(Qt::white);
+    QPainter p(&img);
+    QPen pen(Qt::darkBlue);
+    pen.setWidth(1);
+    p.setPen(pen);
+
+    this->PlotData(p, pen);
+    this->PlotCursor(p, pen);
+    this->PlotAxis(p, pen);
+    this->PlotZoomTracks(p, pen);
+
     return img;
 }
 
@@ -305,6 +326,10 @@ void Plotter::zoomXToCursors(QPoint point)
 void Plotter::unZoom(void)
 {
     zoomX(-5);
+}
+void Plotter::startZoomTrack(QPoint point) {
+    this->zoomTrackVisible[0] = true;
+    this->zoomTracksPos[0] = invMapX(point.x());
 }
 
 // Cursors

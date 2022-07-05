@@ -37,6 +37,7 @@ public:
     void zoomY(qreal val);
     void zoomXToCursors(QPoint point);
     void unZoom(void);
+    void startZoomTrack(QPoint point);
 
     // Resize
     void setSize(QSize size) {m_size = size;}
@@ -79,6 +80,11 @@ public slots:
     void endTimer();
 
 private:
+    void PlotData(QPainter& p, QPen& pen);
+    void PlotCursor(QPainter& p, QPen& pen);
+    void PlotAxis(QPainter& p, QPen& pen);
+    void PlotZoomTracks(QPainter& p, QPen& pen);
+
     QPointF map(double x, double y);
     double invMapX(double x);
     double invMapY(double y);
@@ -97,6 +103,10 @@ private:
     QVector<QRect> m_cursorRect;
     int m_cursorDrag; // 0 none, index + 1 (zero based) if cursor index is dragged
     const int m_cursorMargin = 5;
+
+    // Zoom tracks
+    bool zoomTrackVisible[2] = {false, false};
+    qreal zoomTracksPos[2] = {0.0, 0.0};
 
     // Undo-Redo
     QVector<QRectF> m_undoRangeHystory;

@@ -9,6 +9,8 @@ HZoomState::HZoomState()
 
 void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = true;
+    plot.m_plotter->startZoomTrack(event->pos());
+    plot.updatePlot();
 }
 void HZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
