@@ -1,25 +1,20 @@
-#ifndef NORMALSTATE_H
-#define NORMALSTATE_H
+#ifndef VZOOMSTATE_H
+#define VZOOMSTATE_H
 
 #include "state.h"
-#include <QWidget>
 
-class NormalState : public State
+class VZoomState : public State
 {
 public:
-    NormalState();
+    VZoomState();
 
     void mousePressEvent(WPlot& plot, QMouseEvent* event);
     void mouseReleaseEvent(WPlot& plot, QMouseEvent* event);
     void mouseMoveEvent(WPlot& plot, QMouseEvent* event);
     void mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event);
     void keyPressEvent(WPlot& plot, QKeyEvent* event);
-    void keyReleaseEvent(WPlot& plot, QKeyEvent* event) {};
+    void keyReleaseEvent(WPlot& plot, QKeyEvent* event);
     void setCursor(WPlot& plot);
-
-private:
-    bool m_drag = false;
-    bool m_movingUndo;
 };
 
-#endif // NORMALSTATE_H
+#endif // VZOOMSTATE_H

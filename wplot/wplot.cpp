@@ -198,6 +198,11 @@ void WPlot::hZoom(void)
     this->state = &this->hZoomState;
     this->state->setCursor(*this);
 }
+void WPlot::vZoom(void)
+{
+    this->state = &this->vZoomState;
+    this->state->setCursor(*this);
+}
 
 void WPlot::open_data_file(void)
 {
@@ -251,6 +256,10 @@ void WPlot::ShowContextMenu(QPoint pos)
     QAction hZoomAction("Horizontal zoom", this);
     connect(&hZoomAction, SIGNAL(triggered()), this, SLOT(hZoom()));
     contextMenu.addAction(&hZoomAction);
+
+    QAction vZoomAction("Vertical zoom", this);
+    connect(&vZoomAction, SIGNAL(triggered()), this, SLOT(vZoom()));
+    contextMenu.addAction(&vZoomAction);
 
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));

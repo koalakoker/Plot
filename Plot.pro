@@ -17,6 +17,7 @@ SOURCES += \
     wplot/state/hzoomstate.cpp \
     wplot/state/normalstate.cpp \
     wplot/state/state.cpp \
+    wplot/state/vzoomstate.cpp \
     wplot/state/zoomstate.cpp \
     wplot/wplot.cpp
 
@@ -28,6 +29,7 @@ HEADERS += \
     wplot/state/hzoomstate.h \
     wplot/state/normalstate.h \
     wplot/state/state.h \
+    wplot/state/vzoomstate.h \
     wplot/state/zoomstate.h \
     wplot/wplot.h
 

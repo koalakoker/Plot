@@ -9,6 +9,7 @@
 #include "wplot/state/normalstate.h"
 #include "wplot/state/zoomstate.h"
 #include "wplot/state/hzoomstate.h"
+#include "wplot/state/vzoomstate.h"
 
 class WPlot : public QWidget
 {
@@ -22,9 +23,6 @@ public:
     void loadDataFile(QString fileName);
     void saveDataFile(QString fileName);
 
-    //const Qt::MouseButton dragButton = Qt::LeftButton;
-    //const Qt::MouseButton addCursorButton = Qt::RightButton;
-
     QWidget* wParent;
     Plotter *m_plotter;
     QString m_fileName;
@@ -35,6 +33,7 @@ public:
     NormalState normalState;
     ZoomState zoomState;
     HZoomState hZoomState;
+    VZoomState vZoomState;
 
 public slots:
     void updatePlot(void);
@@ -42,6 +41,7 @@ public slots:
     void zoom_Redo(void);
     void zoom(void);
     void hZoom(void);
+    void vZoom(void);
     void toggleAxisBottomLeft(void);
     void toggleAxisTopRigth(void);
 
