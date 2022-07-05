@@ -183,15 +183,27 @@ void Plotter::PlotAxis(QPainter &p, QPen &pen) {
 }
 void Plotter::PlotZoomTracks(QPainter& p, QPen& pen) {
     for (int i = 0; i < 2; i++) {
-        if (this->zoomTrackVisible[i]) {
-            qreal curXpos       = this->zoomTracksPos[i];
+        if (this->zoomXTrackVisible[i]) {
+            qreal curXpos       = this->zoomXTracksPos[i];
             qreal curYposTop    = m_range.y();
-            qreal curYposBottom = m_range.y()+m_range.height();
+            qreal curYposBottom = m_range.y() + m_range.height();
 
             pen.setColor(Qt::black);
             p.setPen(pen);
 
             p.drawLine(map(curXpos, curYposTop), map(curXpos, curYposBottom));
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        if (this->zoomYTrackVisible[i]) {
+            qreal curYpos       = this->zoomYTracksPos[i];
+            qreal curXposLeft    = m_range.x();
+            qreal curXposRigth = m_range.x()+ m_range.width();
+
+            pen.setColor(Qt::black);
+            p.setPen(pen);
+
+            p.drawLine(map(curXposLeft, curYpos), map(curXposRigth, curYpos));
         }
     }
 }
@@ -324,8 +336,8 @@ void Plotter::zoomXToCursors(QPoint point)
     }
 }
 void Plotter::zoomXToZoomRange() {
-    qreal left  = this->zoomTracksPos[0];
-    qreal rigth = this->zoomTracksPos[1];
+    qreal left  = this->zoomXTracksPos[0];
+    qreal rigth = this->zoomXTracksPos[1];
     if (left == rigth) return;
     if (left > rigth) {
         qreal tmp = left;
@@ -335,18 +347,39 @@ void Plotter::zoomXToZoomRange() {
     m_range.setLeft(left);
     m_range.setRight(rigth);
 }
+void Plotter::zoomYToZoomRange(void) {
+    qreal top    = this->zoomYTracksPos[0];
+    qreal bottom = this->zoomYTracksPos[1];
+    if (top == bottom) return;
+    if (top > bottom) {
+        qreal tmp = top;
+        top = bottom;
+        bottom = tmp;
+    }
+    m_range.setTop(top);
+    m_range.setBottom(bottom);
+}
 void Plotter::unZoom(void)
 {
     zoomX(-5);
 }
-void Plotter::startZoomTrack(QPoint point) {
+void Plotter::startZoomXTrack(QPoint point) {
     for (int i = 0;  i < 2; i++) {
-        this->zoomTrackVisible[i] = true;
-        this->zoomTracksPos[i] = invMapX(point.x());
+        this->zoomXTrackVisible[i] = true;
+        this->zoomXTracksPos[i] = invMapX(point.x());
     }
 }
 void Plotter::zoomTrackScrollPixelX(int pix) {
-    this->zoomTracksPos[1] += (m_range.width()  * (qreal)(pix))/(qreal)(m_size.width ());
+    this->zoomXTracksPos[1] += (m_range.width()  * (qreal)(pix))/(qreal)(m_size.width ());
+}
+void Plotter::startZoomYTrack(QPoint point) {
+    for (int i = 0;  i < 2; i++) {
+        this->zoomYTrackVisible[i] = true;
+        this->zoomYTracksPos[i] = invMapY(point.y());
+    }
+}
+void Plotter::zoomTrackScrollPixelY(int pix) {
+    this->zoomYTracksPos[1] -= (m_range.height()  * (qreal)(pix))/(qreal)(m_size.height());
 }
 
 // Cursors

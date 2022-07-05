@@ -15,6 +15,9 @@ public:
     void keyPressEvent(WPlot& plot, QKeyEvent* event);
     void keyReleaseEvent(WPlot& plot, QKeyEvent* event);
     void setCursor(WPlot& plot);
+
+private:
+    bool m_drag = false;
 };
 
 #endif // VZOOMSTATE_H

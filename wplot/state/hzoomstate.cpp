@@ -9,9 +9,10 @@ HZoomState::HZoomState()
 
 void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = true;
-    plot.m_plotter->startZoomTrack(event->pos());
+    plot.m_plotter->startZoomXTrack(event->pos());
     plot.m_lastPoint = event->pos();
     plot.updatePlot();
+    event->accept();
 }
 void HZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
@@ -25,6 +26,7 @@ void HZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         plot.m_lastPoint = event->pos();
         plot.m_plotter->zoomTrackScrollPixelX(delta.x());
         plot.updatePlot();
+        event->accept();
     }
 }
 void HZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {}

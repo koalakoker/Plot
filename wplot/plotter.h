@@ -37,9 +37,12 @@ public:
     void zoomY(qreal val);
     void zoomXToCursors(QPoint point);
     void zoomXToZoomRange(void);
+    void zoomYToZoomRange(void);
     void unZoom(void);
-    void startZoomTrack(QPoint point);
+    void startZoomXTrack(QPoint point);
     void zoomTrackScrollPixelX(int pix);
+    void startZoomYTrack(QPoint point);
+    void zoomTrackScrollPixelY(int pix);
 
     // Resize
     void setSize(QSize size) {m_size = size;}
@@ -107,8 +110,10 @@ private:
     const int m_cursorMargin = 5;
 
     // Zoom tracks
-    bool zoomTrackVisible[2] = {false, false};
-    qreal zoomTracksPos[2] = {0.0, 0.0};
+    bool zoomXTrackVisible[2] = {false, false};
+    qreal zoomXTracksPos[2] = {0.0, 0.0};
+    bool zoomYTrackVisible[2] = {false, false};
+    qreal zoomYTracksPos[2] = {0.0, 0.0};
 
     // Undo-Redo
     QVector<QRectF> m_undoRangeHystory;
