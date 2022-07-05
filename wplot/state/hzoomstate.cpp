@@ -8,11 +8,13 @@ HZoomState::HZoomState()
 }
 
 void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
-    this->m_drag = true;
-    plot.m_plotter->startZoomXTrack(event->pos());
-    plot.m_lastPoint = event->pos();
-    plot.updatePlot();
-    event->accept();
+    if (event->button() == Qt::LeftButton) {
+        this->m_drag = true;
+        plot.m_plotter->startZoomXTrack(event->pos());
+        plot.m_lastPoint = event->pos();
+        plot.updatePlot();
+        event->accept();
+    }
 }
 void HZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;

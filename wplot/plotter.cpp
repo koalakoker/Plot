@@ -338,6 +338,11 @@ void Plotter::zoomXToCursors(QPoint point)
 void Plotter::zoomXToZoomRange() {
     qreal left  = this->zoomXTracksPos[0];
     qreal rigth = this->zoomXTracksPos[1];
+
+    for (int i = 0; i < 2;  i++) {
+        this->zoomXTrackVisible[i] = false;
+    }
+
     if (left == rigth) return;
     if (left > rigth) {
         qreal tmp = left;
@@ -350,6 +355,11 @@ void Plotter::zoomXToZoomRange() {
 void Plotter::zoomYToZoomRange(void) {
     qreal top    = this->zoomYTracksPos[0];
     qreal bottom = this->zoomYTracksPos[1];
+
+    for (int i = 0; i < 2;  i++) {
+        this->zoomYTrackVisible[i] = false;
+    }
+
     if (top == bottom) return;
     if (top > bottom) {
         qreal tmp = top;
