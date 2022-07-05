@@ -15,6 +15,8 @@ void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 }
 void HZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
+    plot.m_plotter->zoomXToZoomRange();
+    plot.updatePlot();
 }
 void HZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_drag) {

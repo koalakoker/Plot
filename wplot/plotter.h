@@ -36,6 +36,7 @@ public:
     void zoomX(qreal val);
     void zoomY(qreal val);
     void zoomXToCursors(QPoint point);
+    void zoomXToZoomRange(void);
     void unZoom(void);
     void startZoomTrack(QPoint point);
     void zoomTrackScrollPixelX(int pix);

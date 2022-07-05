@@ -323,6 +323,19 @@ void Plotter::zoomXToCursors(QPoint point)
         m_range.setRight(xMax);
     }
 }
+void Plotter::zoomXToZoomRange() {
+    qreal left  = this->zoomTracksPos[0];
+    qreal rigth = this->zoomTracksPos[1];
+    if (left == rigth) return;
+    if (left > rigth) {
+        qreal tmp = left;
+        left = rigth;
+        rigth = tmp;
+    }
+    qDebug() << "Left:" << left << " Right:" << rigth;
+    m_range.setLeft(left);
+    m_range.setRight(rigth);
+}
 void Plotter::unZoom(void)
 {
     zoomX(-5);
