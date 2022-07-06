@@ -6,7 +6,6 @@ VZoomState::VZoomState()
 {
 
 }
-
 void VZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         this->m_drag = true;
@@ -18,6 +17,7 @@ void VZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 }
 void VZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
+    plot.m_plotter->AddUndoStatus();
     plot.m_plotter->zoomYToZoomRange();
     plot.updatePlot();
     event->accept();
@@ -37,6 +37,8 @@ void VZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
         plot.state = &plot.normalState;
         plot.state->setCursor(plot);
         event->accept();
+    } else {
+        State::keyPressEvent(plot, event);
     }
 }
 void VZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {}

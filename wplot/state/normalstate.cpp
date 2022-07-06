@@ -5,7 +5,6 @@ NormalState::NormalState()
 {
 
 }
-
 void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton)
     {
@@ -23,7 +22,6 @@ void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 
     }
 }
-
 void NormalState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton)
     {
@@ -37,7 +35,6 @@ void NormalState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
         }
     }
 }
-
 void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     if (m_drag)
     {
@@ -73,18 +70,15 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         plot.setCursor(Qt::ArrowCursor);
     }
 }
-
 void NormalState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     // Zoom in
     plot.m_plotter->AddUndoStatus();
     plot.m_plotter->zoomXToCursors(event->pos());
     plot.updatePlot();
 }
-
 void NormalState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
-    event->ignore();
+    State::keyPressEvent(plot, event);
 }
-
 void NormalState::setCursor(WPlot& plot) {
     plot.setCursor(Qt::ArrowCursor);
 }
