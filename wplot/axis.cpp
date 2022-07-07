@@ -22,6 +22,8 @@ void Axis::onOk(void) {
     m_range->setRight (leXmax.text().toDouble());
     m_range->setTop   (leYmin.text().toDouble());
     m_range->setBottom(leYmax.text().toDouble());
+    m_axisDiv->setX(leXdiv.text().toDouble());
+    m_axisDiv->setY(leYdiv.text().toDouble());
     emit axisUpdated();
 }
 
@@ -74,7 +76,9 @@ void Axis::createDialog(void) {
 }
 void Axis::updateDialog(void) {
     leXmin.setText(QString::number(m_range->left()));
+    leXdiv.setText(QString::number(m_axisDiv->x()));
     leXmax.setText(QString::number(m_range->right()));
     leYmin.setText(QString::number(m_range->top()));
+    leYdiv.setText(QString::number(m_axisDiv->y()));
     leYmax.setText(QString::number(m_range->bottom()));
 }

@@ -6,6 +6,14 @@
 #include <QTimer>
 #include <QDebug>
 
+Plotter::Plotter(QSize size, QRectF range, QVector<SData> data, style_t style)
+    : m_range(range), m_size(size), m_data(data), m_style(style), m_cursorDrag(0),
+      m_debounce(false) {
+    float defDiv = 5.0;
+    m_axisDiv.setX((range.right()-range.left())/defDiv);
+    m_axisDiv.setY((range.bottom()-range.top())/defDiv);
+}
+
 // Plot
 void Plotter::PlotData(QPainter &p, QPen &pen) {
     if (m_data.size() != 0)
@@ -181,6 +189,43 @@ void Plotter::PlotAxis(QPainter &p, QPen &pen) {
         }
     }
 }
+void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
+
+    int maxDiv = (int)((this->m_range.bottom() - this->m_range.top()) / this->m_axisDiv.y());
+    for (int div = -maxDiv; div <= maxDiv; div++) {
+
+        if (div == 0) {
+            pen.setColor(Qt::black);
+            pen.setStyle(Qt::SolidLine);
+        } else {
+            pen.setColor(Qt::lightGray);
+            pen.setStyle(Qt::DotLine);
+        }
+        p.setPen(pen);
+
+        qreal Ypos       = -(this->m_axisDiv.y() * div);
+        qreal XposLeft    = m_range.x();
+        qreal XposRigth = m_range.x() + m_range.width();
+        p.drawLine(map(XposLeft, Ypos), map(XposRigth, Ypos));
+    }
+    maxDiv = (int)((this->m_range.right() - this->m_range.left()) / this->m_axisDiv.x());
+    for (int div = -maxDiv; div <= maxDiv; div++) {
+
+        if (div == 0) {
+            pen.setColor(Qt::black);
+            pen.setStyle(Qt::SolidLine);
+        } else {
+            pen.setColor(Qt::lightGray);
+            pen.setStyle(Qt::DotLine);
+        }
+        p.setPen(pen);
+
+        qreal Xpos       = -(this->m_axisDiv.x() * div);
+        qreal YposTop    = m_range.y();
+        qreal YposBottom = m_range.y() + m_range.height();
+        p.drawLine(map(Xpos, YposTop), map(Xpos, YposBottom));
+    }
+}
 void Plotter::PlotZoomTracks(QPainter& p, QPen& pen) {
     for (int i = 0; i < 2; i++) {
         if (this->zoomXTrackVisible[i]) {
@@ -221,6 +266,7 @@ QImage Plotter::plot()
     this->PlotCursor(p, pen);
     this->PlotAxis(p, pen);
     this->PlotZoomTracks(p, pen);
+    this->PlotAxisDiv(p, pen);
 
     return img;
 }

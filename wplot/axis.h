@@ -11,6 +11,7 @@ class Axis : public QObject
 public:
     explicit Axis(QObject *parent = nullptr);
     QRectF* m_range;
+    QPointF* m_axisDiv;
 
 public slots:
     void set(void);

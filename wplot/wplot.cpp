@@ -78,6 +78,7 @@ void WPlot::createPlot(void)
                 m_data,
                 Plotter::LINE_STYLE);
     m_axis.m_range = &m_plotter->m_range;
+    m_axis.m_axisDiv = &m_plotter->m_axisDiv;
     emit newPlotter();
     updatePlot();
 }

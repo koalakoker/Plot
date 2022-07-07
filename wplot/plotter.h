@@ -17,9 +17,7 @@ public:
         LINE_STYLE
     } style_t;
 
-    Plotter(QSize size, QRectF range, QVector<SData> data, style_t style = LINE_STYLE)
-        : m_size(size), m_range(range), m_data(data), m_style(style), m_cursorDrag(0),
-          m_debounce(false) { }
+    Plotter(QSize size, QRectF range, QVector<SData> data, style_t style = LINE_STYLE);
 
     void setRangeX_Min(qreal val) {m_range.setLeft  (val);}
     void setRangeX_Max(qreal val) {m_range.setRight (val);}
@@ -70,6 +68,7 @@ public:
     bool m_axsisTop = false;
     bool m_axsisRight = false;
     QRectF m_range;
+    QPointF m_axisDiv;
 
     // Undo-Redo
     void Undo(void);
@@ -89,6 +88,7 @@ private:
     void PlotData(QPainter& p, QPen& pen);
     void PlotCursor(QPainter& p, QPen& pen);
     void PlotAxis(QPainter& p, QPen& pen);
+    void PlotAxisDiv(QPainter& p, QPen& pen);
     void PlotZoomTracks(QPainter& p, QPen& pen);
 
     QPointF map(double x, double y);
