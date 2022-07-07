@@ -5,7 +5,6 @@ State::State()
 {
 
 }
-
 void State::keyPressEvent(WPlot& plot, QKeyEvent* event) {
     Qt::KeyboardModifiers mask = Qt::ControlModifier | Qt::ShiftModifier;
     Qt::KeyboardModifiers maskedModifiers = event->modifiers() & mask;

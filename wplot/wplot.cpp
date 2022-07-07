@@ -77,6 +77,7 @@ void WPlot::createPlot(void)
                 QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min),
                 m_data,
                 Plotter::LINE_STYLE);
+    m_axis.m_range = &m_plotter->m_range;
     emit newPlotter();
     updatePlot();
 }
@@ -276,6 +277,11 @@ void WPlot::ShowContextMenu(QPoint pos)
     QAction exportDataAction("Export data", this);
     connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
     contextMenu.addAction(&exportDataAction);
+
+    QAction setAxisAction("Set axis", this);
+    connect(&setAxisAction, SIGNAL(triggered()), &this->m_axis, SLOT(set()));
+    connect(&this->m_axis, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
+    contextMenu.addAction(&setAxisAction);
 
     QAction toggleAxisBottomLeftAction("Toggle axis bottom left", this);
     connect(&toggleAxisBottomLeftAction, SIGNAL(triggered()), this, SLOT(toggleAxisBottomLeft()));

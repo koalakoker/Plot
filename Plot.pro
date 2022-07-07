@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    wplot/axis.cpp \
     wplot/cursors.cpp \
     wplot/plotter.cpp \
     wplot/sdata.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    wplot/axis.h \
     wplot/cursors.h \
     wplot/plotter.h \
     wplot/sdata.h \

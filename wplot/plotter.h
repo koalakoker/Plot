@@ -69,6 +69,7 @@ public:
     bool m_axsisLeft = false;
     bool m_axsisTop = false;
     bool m_axsisRight = false;
+    QRectF m_range;
 
     // Undo-Redo
     void Undo(void);
@@ -97,7 +98,6 @@ private:
     double mapY(double y);
 
     QSize m_size;
-    QRectF m_range;
     QVector<SData> m_data;
 
     style_t m_style;

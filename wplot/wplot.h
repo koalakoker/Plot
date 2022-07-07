@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QLineEdit>
 
-#include "wplot/plotter.h"
+#include "plotter.h"
+#include "axis.h"
+
 #include "wplot/state/state.h"
 #include "wplot/state/normalstate.h"
 #include "wplot/state/zoomstate.h"
@@ -25,6 +27,7 @@ public:
 
     QWidget* wParent;
     Plotter *m_plotter;
+    Axis m_axis;
     QString m_fileName;
 
     QPoint m_lastPoint;
