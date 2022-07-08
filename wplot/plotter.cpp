@@ -192,7 +192,7 @@ void Plotter::PlotAxis(QPainter &p, QPen &pen) {
 void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
     int maxDiv;
 
-    if (m_axisDivVisible[0]) {
+    if (m_axisDivVisible[1]) {
         maxDiv = (int)((m_range.bottom() - m_range.top()) / m_axisDiv.y());
         for (int div = -maxDiv; div <= maxDiv; div++) {
 
@@ -211,7 +211,7 @@ void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
             p.drawLine(map(XposLeft, Ypos), map(XposRigth, Ypos));
         }
     }
-    if (m_axisDivVisible[1]) {
+    if (m_axisDivVisible[0]) {
         maxDiv = (int)((m_range.right() - m_range.left()) / m_axisDiv.x());
         for (int div = -maxDiv; div <= maxDiv; div++) {
 

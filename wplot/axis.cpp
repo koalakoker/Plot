@@ -12,7 +12,10 @@ Axis::Axis(QObject *parent)
 }
 void Axis::set(void) {
     updateDialog();
+    updateControlsVisibility();
     m_diag.show();
+    connect(&cbXdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
+    connect(&cbYdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
 }
 void Axis::onOk(void) {
     updateParent();
@@ -28,35 +31,39 @@ void Axis::createDialog(void) {
     QVBoxLayout *layInputsSx = new QVBoxLayout;
     QLabel* lXmin = new QLabel("x min:");
     cbXdiv.setText("Enable x divisions");
-    QLabel* lXdiv = new QLabel("x divisions:");
+    lXdiv.setText("x divisions:");
     QLabel* lXmax = new QLabel("x max:");
     layInputsSx->addWidget(lXmin);
     layInputsSx->addWidget(&leXmin);
-    layInputsSx->addWidget(&cbXdiv);
-    layInputsSx->addWidget(lXdiv);
-    layInputsSx->addWidget(&leXdiv);
     layInputsSx->addWidget(lXmax);
     layInputsSx->addWidget(&leXmax);
+    layInputsSx->addWidget(&cbXdiv);
+    layInputsSx->addWidget(&lXdiv);
+    layInputsSx->addWidget(&leXdiv);
+    layInputsSx->addStretch();
+
     connect(&leXmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
     connect(&leXdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
     connect(&leXmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leYmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leYdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leYmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
 
     // Dx
     QVBoxLayout *layInputsDx = new QVBoxLayout;
     QLabel* lYmin = new QLabel("y min:");
     cbYdiv.setText("Enable y divisions");
-    QLabel* lYdiv = new QLabel("y divisions:");
+    lYdiv.setText("y divisions:");
     QLabel* lYmax = new QLabel("y max:");
     layInputsDx->addWidget(lYmin);
     layInputsDx->addWidget(&leYmin);
-    layInputsDx->addWidget(&cbYdiv);
-    layInputsDx->addWidget(lYdiv);
-    layInputsDx->addWidget(&leYdiv);
     layInputsDx->addWidget(lYmax);
     layInputsDx->addWidget(&leYmax);
+    layInputsDx->addWidget(&cbYdiv);
+    layInputsDx->addWidget(&lYdiv);
+    layInputsDx->addWidget(&leYdiv);
+    layInputsDx->addStretch();
+
+    connect(&leYmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leYdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leYmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
 
     layInputs->addLayout(layInputsSx);
     layInputs->addLayout(layInputsDx);
@@ -71,6 +78,7 @@ void Axis::createDialog(void) {
     layMain->addLayout(layInputs);
     layMain->addLayout(layButtons);
 
+    m_diag.setWindowTitle("Axis properties");
     m_diag.setLayout(layMain);
     m_diag.connect(bOk, SIGNAL(clicked()), this, SLOT(onOk()));
     m_diag.connect(bCancel, SIGNAL(clicked()), &m_diag, SLOT(close()));
@@ -103,4 +111,14 @@ void Axis::updateParent(void) {
     m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
     m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
     emit axisUpdated();
+}
+void Axis::updateControlsVisibility(void) {
+    lXdiv.setVisible(m_axisDivVisible[0]);
+    leXdiv.setVisible(m_axisDivVisible[0]);
+    lYdiv.setVisible(m_axisDivVisible[1]);
+    leYdiv.setVisible(m_axisDivVisible[1]);
+}
+void Axis::cbChanged(int state) {
+    updateParent();
+    updateControlsVisibility();
 }

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDialog>
+#include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
 
@@ -26,10 +27,12 @@ private:
     QDialog m_diag;
     QLineEdit leXmin;
     QCheckBox cbXdiv;
+    QLabel lXdiv;
     QLineEdit leXdiv;
     QLineEdit leXmax;
     QLineEdit leYmin;
     QCheckBox cbYdiv;
+    QLabel lYdiv;
     QLineEdit leYdiv;
     QLineEdit leYmax;
 
@@ -38,6 +41,8 @@ private:
 
 private slots:
     void updateParent(void);
+    void updateControlsVisibility(void);
+    void cbChanged(int state);
 };
 
 #endif // AXIS_H

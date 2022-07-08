@@ -272,15 +272,15 @@ void WPlot::ShowContextMenu(QPoint pos)
     connect(&zoomRedoAction, SIGNAL(triggered()), this, SLOT(zoom_Redo()));
     contextMenu.addAction(&zoomRedoAction);
 
-    QAction openDataAction("Open data", this);
+    QAction openDataAction("Load data", this);
     connect(&openDataAction, SIGNAL(triggered()), this, SLOT(open_data_file()));
     contextMenu.addAction(&openDataAction);
 
-    QAction exportDataAction("Export data", this);
+    QAction exportDataAction("Save data", this);
     connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
     contextMenu.addAction(&exportDataAction);
 
-    QAction setAxisAction("Set axis", this);
+    QAction setAxisAction("Axis properties", this);
     connect(&setAxisAction, SIGNAL(triggered()), &this->m_axis, SLOT(set()));
     connect(&this->m_axis, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
     contextMenu.addAction(&setAxisAction);
