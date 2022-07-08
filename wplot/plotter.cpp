@@ -190,40 +190,45 @@ void Plotter::PlotAxis(QPainter &p, QPen &pen) {
     }
 }
 void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
+    int maxDiv;
 
-    int maxDiv = (int)((this->m_range.bottom() - this->m_range.top()) / this->m_axisDiv.y());
-    for (int div = -maxDiv; div <= maxDiv; div++) {
+    if (m_axisDivVisible[0]) {
+        maxDiv = (int)((m_range.bottom() - m_range.top()) / m_axisDiv.y());
+        for (int div = -maxDiv; div <= maxDiv; div++) {
 
-        if (div == 0) {
-            pen.setColor(Qt::black);
-            pen.setStyle(Qt::SolidLine);
-        } else {
-            pen.setColor(Qt::lightGray);
-            pen.setStyle(Qt::DotLine);
+            if (div == 0) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+            } else {
+                pen.setColor(Qt::lightGray);
+                pen.setStyle(Qt::DotLine);
+            }
+            p.setPen(pen);
+
+            qreal Ypos      = -(m_axisDiv.y() * div);
+            qreal XposLeft  = m_range.x();
+            qreal XposRigth = m_range.x() + m_range.width();
+            p.drawLine(map(XposLeft, Ypos), map(XposRigth, Ypos));
         }
-        p.setPen(pen);
-
-        qreal Ypos       = -(this->m_axisDiv.y() * div);
-        qreal XposLeft    = m_range.x();
-        qreal XposRigth = m_range.x() + m_range.width();
-        p.drawLine(map(XposLeft, Ypos), map(XposRigth, Ypos));
     }
-    maxDiv = (int)((this->m_range.right() - this->m_range.left()) / this->m_axisDiv.x());
-    for (int div = -maxDiv; div <= maxDiv; div++) {
+    if (m_axisDivVisible[1]) {
+        maxDiv = (int)((m_range.right() - m_range.left()) / m_axisDiv.x());
+        for (int div = -maxDiv; div <= maxDiv; div++) {
 
-        if (div == 0) {
-            pen.setColor(Qt::black);
-            pen.setStyle(Qt::SolidLine);
-        } else {
-            pen.setColor(Qt::lightGray);
-            pen.setStyle(Qt::DotLine);
+            if (div == 0) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+            } else {
+                pen.setColor(Qt::lightGray);
+                pen.setStyle(Qt::DotLine);
+            }
+            p.setPen(pen);
+
+            qreal Xpos       = -(m_axisDiv.x() * div);
+            qreal YposTop    = m_range.y();
+            qreal YposBottom = m_range.y() + m_range.height();
+            p.drawLine(map(Xpos, YposTop), map(Xpos, YposBottom));
         }
-        p.setPen(pen);
-
-        qreal Xpos       = -(this->m_axisDiv.x() * div);
-        qreal YposTop    = m_range.y();
-        qreal YposBottom = m_range.y() + m_range.height();
-        p.drawLine(map(Xpos, YposTop), map(Xpos, YposBottom));
     }
 }
 void Plotter::PlotZoomTracks(QPainter& p, QPen& pen) {

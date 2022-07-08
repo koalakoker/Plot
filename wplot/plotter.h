@@ -69,6 +69,7 @@ public:
     bool m_axsisRight = false;
     QRectF m_range;
     QPointF m_axisDiv;
+    bool m_axisDivVisible[2] = {true, true};
 
     // Undo-Redo
     void Undo(void);

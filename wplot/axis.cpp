@@ -24,6 +24,8 @@ void Axis::onOk(void) {
     m_range->setBottom(leYmax.text().toDouble());
     m_axisDiv->setX(leXdiv.text().toDouble());
     m_axisDiv->setY(leYdiv.text().toDouble());
+    m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
+    m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
     emit axisUpdated();
 }
 
@@ -36,10 +38,12 @@ void Axis::createDialog(void) {
     // Sx
     QVBoxLayout *layInputsSx = new QVBoxLayout;
     QLabel* lXmin = new QLabel("x min:");
-    QLabel* lXdiv = new QLabel("x division:");
+    cbXdiv.setText("Enable x divisions");
+    QLabel* lXdiv = new QLabel("x divisions:");
     QLabel* lXmax = new QLabel("x max:");
     layInputsSx->addWidget(lXmin);
     layInputsSx->addWidget(&leXmin);
+    layInputsSx->addWidget(&cbXdiv);
     layInputsSx->addWidget(lXdiv);
     layInputsSx->addWidget(&leXdiv);
     layInputsSx->addWidget(lXmax);
@@ -48,10 +52,12 @@ void Axis::createDialog(void) {
     // Dx
     QVBoxLayout *layInputsDx = new QVBoxLayout;
     QLabel* lYmin = new QLabel("y min:");
-    QLabel* lYdiv = new QLabel("y division:");
+    cbYdiv.setText("Enable y divisions");
+    QLabel* lYdiv = new QLabel("y divisions:");
     QLabel* lYmax = new QLabel("y max:");
     layInputsDx->addWidget(lYmin);
     layInputsDx->addWidget(&leYmin);
+    layInputsDx->addWidget(&cbYdiv);
     layInputsDx->addWidget(lYdiv);
     layInputsDx->addWidget(&leYdiv);
     layInputsDx->addWidget(lYmax);
@@ -76,9 +82,19 @@ void Axis::createDialog(void) {
 }
 void Axis::updateDialog(void) {
     leXmin.setText(QString::number(m_range->left()));
+    if (this->m_axisDivVisible[0]) {
+        cbXdiv.setCheckState(Qt::Checked);
+    } else {
+        cbXdiv.setCheckState(Qt::Unchecked);
+    }
     leXdiv.setText(QString::number(m_axisDiv->x()));
     leXmax.setText(QString::number(m_range->right()));
     leYmin.setText(QString::number(m_range->top()));
+    if (this->m_axisDivVisible[1]) {
+        cbYdiv.setCheckState(Qt::Checked);
+    } else {
+        cbYdiv.setCheckState(Qt::Unchecked);
+    }
     leYdiv.setText(QString::number(m_axisDiv->y()));
     leYmax.setText(QString::number(m_range->bottom()));
 }
