@@ -10,25 +10,14 @@ Axis::Axis(QObject *parent)
     : QObject{parent} {
     createDialog();
 }
-
 void Axis::set(void) {
     updateDialog();
     m_diag.show();
 }
-
 void Axis::onOk(void) {
+    updateParent();
     m_diag.close();
-    m_range->setLeft  (leXmin.text().toDouble());
-    m_range->setRight (leXmax.text().toDouble());
-    m_range->setTop   (leYmin.text().toDouble());
-    m_range->setBottom(leYmax.text().toDouble());
-    m_axisDiv->setX(leXdiv.text().toDouble());
-    m_axisDiv->setY(leYdiv.text().toDouble());
-    m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
-    m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
-    emit axisUpdated();
 }
-
 void Axis::createDialog(void) {
     QVBoxLayout *layMain = new QVBoxLayout;
 
@@ -48,6 +37,12 @@ void Axis::createDialog(void) {
     layInputsSx->addWidget(&leXdiv);
     layInputsSx->addWidget(lXmax);
     layInputsSx->addWidget(&leXmax);
+    connect(&leXmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leXdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leXmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leYmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leYdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+    connect(&leYmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
 
     // Dx
     QVBoxLayout *layInputsDx = new QVBoxLayout;
@@ -97,4 +92,15 @@ void Axis::updateDialog(void) {
     }
     leYdiv.setText(QString::number(m_axisDiv->y()));
     leYmax.setText(QString::number(m_range->bottom()));
+}
+void Axis::updateParent(void) {
+    m_range->setLeft  (leXmin.text().toDouble());
+    m_range->setRight (leXmax.text().toDouble());
+    m_range->setTop   (leYmin.text().toDouble());
+    m_range->setBottom(leYmax.text().toDouble());
+    m_axisDiv->setX(leXdiv.text().toDouble());
+    m_axisDiv->setY(leYdiv.text().toDouble());
+    m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
+    m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
+    emit axisUpdated();
 }

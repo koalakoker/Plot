@@ -35,6 +35,9 @@ private:
 
     void createDialog(void);
     void updateDialog(void);
+
+private slots:
+    void updateParent(void);
 };
 
 #endif // AXIS_H
