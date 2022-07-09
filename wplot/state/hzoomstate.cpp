@@ -31,7 +31,7 @@ void HZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         event->accept();
     }
 }
-void HZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {}
+void HZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
 void HZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
     if (event->key() == Qt::Key_Escape) {
         plot.state = &plot.normalState;
@@ -41,7 +41,7 @@ void HZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
         State::keyPressEvent(plot, event);
     }
 }
-void HZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {}
+void HZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
 void HZoomState::setCursor(WPlot& plot) {
     plot.setCursor(Cursors::get(Cursors::ZoomIn));
 }

@@ -127,70 +127,13 @@ void Plotter::PlotCursor(QPainter& p, QPen& pen) {
         this->plotValuesNearCursor(p, cur);
     }
 }
-void Plotter::PlotAxis(QPainter &p, QPen &pen) {
-    /* Axis */
-    int hDivNum = 5;
-    int vDivNum = 5;
+void Plotter::PlotAxis(QPainter& p, QPen& pen) {
+    int maxDiv;
     int divLen = 10;
     int hSpacer = 5;
     int vSpacer = 5;
-
-    int h = m_size.height();
     int w = m_size.width();
-    QFontMetrics fm(p.font());
-
-    int hDivSpace = m_size.width()  / hDivNum;
-    int vDivSpace = m_size.height() / vDivNum;
-
-    pen.setColor(Qt::black);
-    pen.setStyle(Qt::SolidLine);
-    p.setPen(pen);
-    if (m_axsisBottom)
-    {
-        for (int i = 0; i < (hDivNum-1); i++)
-        {
-            int x = hDivSpace * (i+1);
-            p.drawLine(QPoint(x, h), QPoint(x, h - divLen));
-            QString valueStr = QString::number(invMapX(x),'g', 3);
-            p.drawText(QPoint(x + vSpacer, h - hSpacer), valueStr);
-        }
-    }
-    if (m_axsisTop)
-    {
-        for (int i = 0; i < (hDivNum-1); i++)
-        {
-            int x = hDivSpace * (i+1);
-            p.drawLine(QPoint(x, 0), QPoint(x, divLen));
-            QString valueStr = QString::number(invMapX(x),'g', 3);
-            QSize sz = fm.size(Qt::TextSingleLine,valueStr);
-            p.drawText(QPoint(x + vSpacer, sz.height()), valueStr);
-        }
-    }
-    if (m_axsisLeft)
-    {
-        for (int i = 0; i < (vDivNum-1); i++)
-        {
-            int y = vDivSpace * (i+1);
-            p.drawLine(QPoint(0, y), QPoint(divLen, y));
-            QString valueStr = QString::number(invMapY(y),'g', 3);
-            QSize sz = fm.size(Qt::TextSingleLine,valueStr);
-            p.drawText(QPoint(divLen + hSpacer, y + (sz.height()/2) - hSpacer) , valueStr);
-        }
-    }
-    if (m_axsisRight)
-    {
-        for (int i = 0; i < (vDivNum-1); i++)
-        {
-            int y = vDivSpace * (i+1);
-            p.drawLine(QPoint(w, y), QPoint(w - divLen, y));
-            QString valueStr = QString::number(invMapY(y),'g', 3);
-            QSize sz = fm.size(Qt::TextSingleLine,valueStr);
-            p.drawText(QPoint(w - divLen - hSpacer - sz.width(), y + (sz.height()/2) - hSpacer) , valueStr);
-        }
-    }
-}
-void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
-    int maxDiv;
+    int h = m_size.height();
 
     if (m_axisDivVisible[1]) {
         maxDiv = (int)((m_range.bottom() - m_range.top()) / m_axisDiv.y());
@@ -209,6 +152,33 @@ void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
             qreal XposLeft  = m_range.x();
             qreal XposRigth = m_range.x() + m_range.width();
             p.drawLine(map(XposLeft, Ypos), map(XposRigth, Ypos));
+
+            if (m_axsisLeft) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
+
+                QPointF point = map(XposLeft, Ypos);
+                int y = (int)(point.y());
+                p.drawLine(QPoint(0, y), QPoint(divLen, y));
+                QString valueStr = QString::number(invMapY(y),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(divLen + hSpacer, y + (sz.height()/2) - hSpacer) , valueStr);
+            }
+            if (m_axsisRight) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
+
+                QPointF point = map(XposRigth, Ypos);
+                int y = (int)(point.y());
+                p.drawLine(QPoint(w, y), QPoint(w - divLen, y));
+                QString valueStr = QString::number(invMapY(y),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(w - divLen - hSpacer - sz.width(), y + (sz.height()/2) - hSpacer) , valueStr);
+            }
         }
     }
     if (m_axisDivVisible[0]) {
@@ -228,6 +198,32 @@ void Plotter::PlotAxisDiv(QPainter& p, QPen& pen) {
             qreal YposTop    = m_range.y();
             qreal YposBottom = m_range.y() + m_range.height();
             p.drawLine(map(Xpos, YposTop), map(Xpos, YposBottom));
+
+            if (m_axsisBottom) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+
+                QPointF bottomPoint = map(Xpos, YposBottom);
+                int x = (int)(bottomPoint.x());
+                p.drawLine(QPoint(x, h), QPoint(x, h - divLen));
+                QString valueStr = QString::number(invMapX(x),'g', 3);
+                p.drawText(QPoint(x + vSpacer, h - hSpacer), valueStr);
+            }
+
+            if (m_axsisTop) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
+
+                QPointF topPoint = map(Xpos, YposTop);
+                int x = (int)(topPoint.x());
+                p.drawLine(QPoint(x, 0), QPoint(x, divLen));
+                QString valueStr = QString::number(invMapX(x),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(x + vSpacer, sz.height()), valueStr);
+            }
         }
     }
 }
@@ -271,7 +267,6 @@ QImage Plotter::plot()
     this->PlotCursor(p, pen);
     this->PlotAxis(p, pen);
     this->PlotZoomTracks(p, pen);
-    this->PlotAxisDiv(p, pen);
 
     return img;
 }

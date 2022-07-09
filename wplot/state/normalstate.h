@@ -14,7 +14,7 @@ public:
     void mouseMoveEvent(WPlot& plot, QMouseEvent* event);
     void mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event);
     void keyPressEvent(WPlot& plot, QKeyEvent* event);
-    void keyReleaseEvent(WPlot& plot, QKeyEvent* event) {};
+    void keyReleaseEvent(WPlot& plot, QKeyEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
     void setCursor(WPlot& plot);
 
 private:

@@ -22,10 +22,8 @@ void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
         }
     }
 }
-void ZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {}
-void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
-
-}
+void ZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
+void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
 void ZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_shiftKeyPressed)  {
         // Zoom Out

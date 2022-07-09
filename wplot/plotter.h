@@ -89,7 +89,6 @@ private:
     void PlotData(QPainter& p, QPen& pen);
     void PlotCursor(QPainter& p, QPen& pen);
     void PlotAxis(QPainter& p, QPen& pen);
-    void PlotAxisDiv(QPainter& p, QPen& pen);
     void PlotZoomTracks(QPainter& p, QPen& pen);
 
     QPointF map(double x, double y);

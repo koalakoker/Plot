@@ -119,6 +119,7 @@ void Axis::updateControlsVisibility(void) {
     leYdiv.setVisible(m_axisDivVisible[1]);
 }
 void Axis::cbChanged(int state) {
+    Q_UNUSED(state);
     updateParent();
     updateControlsVisibility();
 }
