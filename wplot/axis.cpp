@@ -111,3 +111,22 @@ void Axis::plot(QPainter& p, QPen& pen) {
 
     zoom->plotTracks(p, pen);
 }
+
+void Axis::scrollX(qreal val)
+{
+    m_range.setLeft(m_range.left() + val);
+    m_range.setRight (m_range.right()  + val);
+}
+void Axis::scrollY(qreal val)
+{
+    m_range.setTop (m_range.top()  + val);
+    m_range.setBottom(m_range.bottom() + val);
+}
+void Axis::scrollXpixel(int pix)
+{
+    scrollX((m_range.width()  * (qreal)(pix))/(qreal)(plotter->m_size.width ()));
+}
+void Axis::scrollYpixel(int pix)
+{
+    scrollY((m_range.height() * (qreal)(pix))/(qreal)(plotter->m_size.height()));
+}

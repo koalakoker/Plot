@@ -53,27 +53,3 @@ double Plotter::invMapY(double y)
     QRectF m_range = axis->m_range;
     return (((1 - (y / m_size.height())) * m_range.height()) + m_range.y());
 }
-
-// Scroll
-void Plotter::scrollX(qreal val)
-{
-    QRectF m_range = axis->m_range;
-    m_range.setLeft(m_range.left() + val);
-    m_range.setRight (m_range.right()  + val);
-}
-void Plotter::scrollY(qreal val)
-{
-    QRectF m_range = axis->m_range;
-    m_range.setTop (m_range.top()  + val);
-    m_range.setBottom(m_range.bottom() + val);
-}
-void Plotter::scrollXpixel(int pix)
-{
-    QRectF m_range = axis->m_range;
-    scrollX((m_range.width()  * (qreal)(pix))/(qreal)(m_size.width ()));
-}
-void Plotter::scrollYpixel(int pix)
-{
-    QRectF m_range = axis->m_range;
-    scrollY((m_range.height() * (qreal)(pix))/(qreal)(m_size.height()));
-}

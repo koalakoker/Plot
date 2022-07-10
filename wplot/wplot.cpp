@@ -139,6 +139,7 @@ void WPlot::loadDataFile(QString fileName)
                     size(),
                     QRectF(x_min, y_min, x_max - x_min, y_max - y_min));
         m_plotter->curve->m_data = m_data;
+        m_axis.m_range = &m_plotter->axis->m_range;
         emit newPlotter();
         updatePlot();
     }

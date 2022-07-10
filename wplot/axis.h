@@ -21,6 +21,11 @@ public:
     void setRangeY_Min(qreal val) {m_range.setBottom(val);}
     void setRangeY_Max(qreal val) {m_range.setTop   (val);}
 
+    void scrollX(qreal val);
+    void scrollY(qreal val);
+    void scrollXpixel(int pix);
+    void scrollYpixel(int pix);
+
     bool m_showBottom = false;
     bool m_showLeft = false;
     bool m_showTop = false;

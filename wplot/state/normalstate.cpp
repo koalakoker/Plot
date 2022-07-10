@@ -47,8 +47,8 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 
         QPoint delta = plot.m_lastPoint - event->pos();
         plot.m_lastPoint = event->pos();
-        plot.m_plotter->scrollXpixel( delta.x());
-        plot.m_plotter->scrollYpixel(-delta.y());
+        plot.m_plotter->axis->scrollXpixel( delta.x());
+        plot.m_plotter->axis->scrollYpixel(-delta.y());
         plot.updatePlot();
     }
 

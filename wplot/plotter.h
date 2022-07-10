@@ -26,14 +26,6 @@ public:
     double mapY(double y);
 
     QSize m_size;
-
-    // Scroll
-    void scrollX(qreal val);
-    void scrollY(qreal val);
-    void scrollXpixel(int pix);
-    void scrollYpixel(int pix);
-
-    // Resize
     void setSize(QSize size) {m_size = size;}
 
 signals:
