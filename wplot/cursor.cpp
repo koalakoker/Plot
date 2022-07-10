@@ -2,16 +2,16 @@
 #include "plotter.h"
 #include <QVector>
 
-Cursor::Cursor(Plotter *plotter): plotter(plotter), m_cursorDrag(0)
+Cursor::Cursor(Plotter *plotter): plotter(plotter), m_drag(0)
 {
 
 }
 
-void Cursor::PlotCursor(QPainter& p, QPen& pen) {
+void Cursor::plot(QPainter& p, QPen& pen) {
     /* Cursors */
     int curLabelYPos = 30;
     QRectF m_range = plotter->axis->m_range;
-    m_cursorRect.clear();
+    m_rect.clear();
     for (int cur = 0; cur < m_pos.size(); cur++)
     {
         qreal curXpos       = m_pos.at(cur);
@@ -27,18 +27,18 @@ void Cursor::PlotCursor(QPainter& p, QPen& pen) {
 
         QPointF top     = plotter->map(curXpos, curYposTop);
         QPointF bottom  = plotter->map(curXpos, curYposBottom);
-        QPoint  topLeft    (top.x()    - m_cursorMargin, top.y());
-        QPoint  bottomRight(bottom.x() + m_cursorMargin, bottom.y());
+        QPoint  topLeft    (top.x()    - m_margin, top.y());
+        QPoint  bottomRight(bottom.x() + m_margin, bottom.y());
         QRect   rect(topLeft, bottomRight);
-        m_cursorRect.append(rect);
+        m_rect.append(rect);
 
-        this->plotValuesNearCursor(p, cur);
+        this->plotValuesNear(p, cur);
     }
 }
 
-void Cursor::plotValuesNearCursor(QPainter& p, int cur) {
+void Cursor::plotValuesNear(QPainter& p, int cur) {
     QPen pen;
-    QVector<double> values = getCursorValueTrack(cur);
+    QVector<double> values = getValueTrack(cur);
     QVectorIterator<double> it(values);
     qreal curXpos = it.next();
     int i = 0;
@@ -52,85 +52,85 @@ void Cursor::plotValuesNearCursor(QPainter& p, int cur) {
     }
 }
 
-void   Cursor::addCursor(void)
+void   Cursor::add(void)
 {
     qreal pos = (plotter->invMapX(plotter->m_size.width()) - plotter->invMapX(0))/2;
-    addCursor(pos);
-    emit cursorChanged();
+    add(pos);
+    emit changed();
 }
-void   Cursor::addCursor(qreal pos)
+void   Cursor::add(qreal pos)
 {
     m_pos.append(pos);
-    emit cursorChanged();
+    emit changed();
 }
-void   Cursor::addCursorAtPixel(int pos)
+void   Cursor::addAtPixel(int pos)
 {
     m_pos.append(plotter->invMapX(pos));
-    emit cursorChanged();
+    emit changed();
 }
-void   Cursor::removeCursor(int index)
+void   Cursor::remove(int index)
 {
     m_pos.remove(index);
-    emit cursorChanged();
+    emit changed();
 }
-void Cursor::setCursorPos(int index, qreal pos)
+void Cursor::setPos(int index, qreal pos)
 {
     m_pos[index] = pos;
-    emit cursorChanged();
+    emit changed();
 }
 
-void   Cursor::cursorScroll(int index, qreal pos)
+void   Cursor::scroll(int index, qreal pos)
 {
     m_pos[index] += pos;
-    emit cursorChanged();
+    emit changed();
 }
-void   Cursor::cursorScrollPixel(int index, int pix)
+void   Cursor::scrollPixel(int index, int pix)
 {
     QRectF m_range = plotter->axis->m_range;
-    cursorScroll(index, (m_range.width()  * (qreal)(pix))/(qreal)(plotter->m_size.width ()));
+    scroll(index, (m_range.width()  * (qreal)(pix))/(qreal)(plotter->m_size.width ()));
 }
-bool   Cursor::onCursor(QPoint point, int& selectedCursor, bool startDrag)
+bool   Cursor::on(QPoint point, int& selectedCursor, bool startDrag)
 {
     bool retVal = false;
-    for (int cursor = 0; cursor < m_cursorRect.size(); cursor++)
+    for (int cursor = 0; cursor < m_rect.size(); cursor++)
     {
-        if (m_cursorRect.at(cursor).contains(point))
+        if (m_rect.at(cursor).contains(point))
         {
             retVal = true;
             selectedCursor = cursor;
             if (startDrag)
             {
-                dragCursor(cursor);
+                drag(cursor);
             }
         }
     }
     return retVal;
 }
-void   Cursor::dragCursor(int index)
+void   Cursor::drag(int index)
 {
     if ((index >= 0) && (index < m_pos.size()))
     {
-        m_cursorDrag = index + 1; // 0 none, index + 1 (zero based) if cursor index is dragged
+        m_drag = index + 1; // 0 none, index + 1 (zero based) if cursor index is dragged
     }
 }
-void   Cursor::releaseCursor()
+void   Cursor::release()
 {
-    m_cursorDrag = 0;
+    m_drag = 0;
 }
-int    Cursor::getCursorDragged()
+int    Cursor::getDragged()
 {
-    return m_cursorDrag;
+    return m_drag;
 }
-QVector<QVector<double>> Cursor::getCursorValueTrack(void)
+QVector<QVector<double>> Cursor::getValueTrack(void)
 {
     QVector<QVector<double>> cursorInfo;
     for (int cur = 0; cur < m_pos.size(); cur++)
     {
-        cursorInfo.append(getCursorValueTrack(cur));
+        cursorInfo.append(getValueTrack(cur));
     }
     return cursorInfo;
 }
-QVector<double> Cursor::getCursorValueTrack(int cur)
+QVector<double> Cursor::getValueTrack(int cur)
 {
     QVector<double> data;
     qreal x = m_pos.at(cur);
@@ -149,7 +149,7 @@ QVector<double> Cursor::getCursorValueTrack(int cur)
     }
     return data;
 }
-QVector<double> Cursor::getSelectedCursorValueTrack(void)
+QVector<double> Cursor::getSelectedValueTrack(void)
 {
-    return getCursorValueTrack(m_cursorDrag);
+    return getValueTrack(m_drag);
 }

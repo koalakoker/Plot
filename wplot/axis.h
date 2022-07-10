@@ -15,20 +15,20 @@ public:
     Plotter* plotter;
     Zoom* zoom;
 
-    void PlotAxis(QPainter& p, QPen& pen);
+    void plot(QPainter& p, QPen& pen);
     void setRangeX_Min(qreal val) {m_range.setLeft  (val);}
     void setRangeX_Max(qreal val) {m_range.setRight (val);}
     void setRangeY_Min(qreal val) {m_range.setBottom(val);}
     void setRangeY_Max(qreal val) {m_range.setTop   (val);}
 
-    bool m_axsisBottom = false;
-    bool m_axsisLeft = false;
-    bool m_axsisTop = false;
-    bool m_axsisRight = false;
+    bool m_showBottom = false;
+    bool m_showLeft = false;
+    bool m_showTop = false;
+    bool m_showRight = false;
 
-    QPointF m_axisDiv;
     QRectF m_range;
-    bool m_axisDivVisible[2] = {true, true};    
+    QPointF m_div;
+    bool m_divVisible[2] = {true, true};
 };
 
 #endif // AXIS_H

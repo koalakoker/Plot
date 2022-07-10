@@ -80,8 +80,8 @@ void WPlot::createPlot(void)
                 QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min));
     m_plotter->curve->m_data = m_data;
     m_axis.m_range = &m_plotter->axis->m_range;
-    m_axis.m_axisDiv = &m_plotter->axis->m_axisDiv;
-    m_axis.m_axisDivVisible = m_plotter->axis->m_axisDivVisible;
+    m_axis.m_axisDiv = &m_plotter->axis->m_div;
+    m_axis.m_axisDivVisible = m_plotter->axis->m_divVisible;
     emit newPlotter();
     updatePlot();
 }
@@ -222,20 +222,20 @@ void WPlot::export_data_file(void)
     this->saveDataFile(fileName);
 }
 void WPlot::toggleAxisBottomLeft(void) {
-    this->m_plotter->axis->m_axsisBottom ^= 1;
-    this->m_plotter->axis->m_axsisLeft ^= 1;
+    this->m_plotter->axis->m_showBottom ^= 1;
+    this->m_plotter->axis->m_showLeft ^= 1;
     this->updatePlot();
 }
 void WPlot::toggleAxisTopRigth(void) {
-    this->m_plotter->axis->m_axsisTop ^= 1;
-    this->m_plotter->axis->m_axsisRight ^= 1;
+    this->m_plotter->axis->m_showTop ^= 1;
+    this->m_plotter->axis->m_showRight ^= 1;
     this->updatePlot();
 }
 
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
 {
-    bool onCursor = m_plotter->cursor->onCursor(pos, this->selectedCursor, false);
+    bool onCursor = m_plotter->cursor->on(pos, this->selectedCursor, false);
 
     QMenu contextMenu("Context menu", this);
 
@@ -299,11 +299,11 @@ void WPlot::ShowContextMenu(QPoint pos)
 
 // Cursor functions
 void WPlot::addCursor(void) {
-    m_plotter->cursor->addCursor();
+    m_plotter->cursor->add();
     updatePlot();
 }
 void WPlot::removeCursor(void) {
-    m_plotter->cursor->removeCursor(this->selectedCursor);
+    m_plotter->cursor->remove(this->selectedCursor);
     updatePlot();
 }
 void WPlot::setCursorPos(void) {
@@ -332,7 +332,7 @@ void WPlot::cursorNewPos(void) {
     bool isValid;
     qreal value = inputText.toDouble(&isValid);
     if (isValid) {
-        this->m_plotter->cursor->setCursorPos(this->selectedCursor, value);
+        this->m_plotter->cursor->setPos(this->selectedCursor, value);
         this->updatePlot();
     }
     this->setCurPosDiag->close();

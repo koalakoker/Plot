@@ -13,33 +13,33 @@ public:
     QVector<qreal> m_pos;
 
     Cursor(Plotter* plotter);
-    void PlotCursor(QPainter& p, QPen& pen);
-    int getCursorNumber(void) {return m_pos.size();}
-    void addCursor(void);
-    void addCursor(qreal pos);
-    void addCursorAtPixel(int pos);
-    void removeCursor(int index);
-    void setCursorPos(int index, qreal pos);
-    void cursorScroll(int index, qreal pos);
-    void cursorScrollPixel(int index, int pix);
-    bool onCursor(QPoint point, int& selectedCursor, bool startDrag = false);
-    void dragCursor(int index);
-    void releaseCursor();
-    int getCursorDragged();
-    QVector<QVector<double>> getCursorValueTrack(void);
-    QVector<double> getCursorValueTrack(int cur);
-    QVector<double> getSelectedCursorValueTrack(void);
+    void plot(QPainter& p, QPen& pen);
+    int getNumber(void) {return m_pos.size();}
+    void add(void);
+    void add(qreal pos);
+    void addAtPixel(int pos);
+    void remove(int index);
+    void setPos(int index, qreal pos);
+    void scroll(int index, qreal pos);
+    void scrollPixel(int index, int pix);
+    bool on(QPoint point, int& selectedCursor, bool startDrag = false);
+    void drag(int index);
+    void release();
+    int getDragged();
+    QVector<QVector<double>> getValueTrack(void);
+    QVector<double> getValueTrack(int cur);
+    QVector<double> getSelectedValueTrack(void);
 
 private:
     Plotter* plotter;
-    void plotValuesNearCursor(QPainter &p, int cur);
+    void plotValuesNear(QPainter &p, int cur);
 
-    QVector<QRect> m_cursorRect;
-    int m_cursorDrag; // 0 none, index + 1 (zero based) if cursor index is dragged
-    const int m_cursorMargin = 5;
+    QVector<QRect> m_rect;
+    int m_drag; // 0 none, index + 1 (zero based) if cursor index is dragged
+    const int m_margin = 5;
 
 signals:
-    void cursorChanged();
+    void changed();
 
 };
 

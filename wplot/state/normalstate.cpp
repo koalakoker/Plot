@@ -11,7 +11,7 @@ void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     {
         int selected = 0;
         plot.m_lastPoint = event->pos();
-        if (plot.m_plotter->cursor->onCursor(plot.m_lastPoint, selected, true))
+        if (plot.m_plotter->cursor->on(plot.m_lastPoint, selected, true))
         {
 
         }
@@ -30,9 +30,9 @@ void NormalState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
         {
             m_drag = false;
         }
-        if (plot.m_plotter->cursor->getCursorDragged() != 0)
+        if (plot.m_plotter->cursor->getDragged() != 0)
         {
-            plot.m_plotter->cursor->releaseCursor();
+            plot.m_plotter->cursor->release();
         }
     }
 }
@@ -52,17 +52,17 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         plot.updatePlot();
     }
 
-    int index = plot.m_plotter->cursor->getCursorDragged();
+    int index = plot.m_plotter->cursor->getDragged();
     if (index != 0)
     {
         QPoint delta =  event->pos() - plot.m_lastPoint;
         plot.m_lastPoint = event->pos();
-        plot.m_plotter->cursor->cursorScrollPixel(index-1, delta.x());
+        plot.m_plotter->cursor->scrollPixel(index-1, delta.x());
         plot.updatePlot();
     }
 
     int selected = 0;
-    if (plot.m_plotter->cursor->onCursor(event->pos(), selected, false))
+    if (plot.m_plotter->cursor->on(event->pos(), selected, false))
     {
         plot.setCursor(Qt::SizeHorCursor);
     }

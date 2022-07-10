@@ -23,8 +23,8 @@ QImage Plotter::plot()
     p.setPen(pen);
 
     curve->PlotData(p, pen);
-    cursor->PlotCursor(p, pen);
-    axis->PlotAxis(p, pen);
+    cursor->plot(p, pen);
+    axis->plot(p, pen);
 
     return img;
 }

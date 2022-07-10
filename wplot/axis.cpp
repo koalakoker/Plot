@@ -4,12 +4,12 @@
 Axis::Axis(Plotter *plotter, QRectF range) : plotter(plotter) {
     float defDiv = 5.0;
     m_range = range;
-    m_axisDiv.setX((range.right()-range.left())/defDiv);
-    m_axisDiv.setY((range.bottom()-range.top())/defDiv);
+    m_div.setX((range.right()-range.left())/defDiv);
+    m_div.setY((range.bottom()-range.top())/defDiv);
     zoom = new Zoom(this);
 }
 
-void Axis::PlotAxis(QPainter& p, QPen& pen) {
+void Axis::plot(QPainter& p, QPen& pen) {
     int maxDiv;
     int divLen = 10;
     int hSpacer = 5;
@@ -17,8 +17,8 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
     int w = plotter->m_size.width();
     int h = plotter->m_size.height();
 
-    if (m_axisDivVisible[1]) {
-        maxDiv = (int)((m_range.bottom() - m_range.top()) / m_axisDiv.y());
+    if (m_divVisible[1]) {
+        maxDiv = (int)((m_range.bottom() - m_range.top()) / m_div.y());
         for (int div = -maxDiv; div <= maxDiv; div++) {
 
             if (div == 0) {
@@ -30,12 +30,12 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
             }
             p.setPen(pen);
 
-            qreal Ypos      = -(m_axisDiv.y() * div);
+            qreal Ypos      = -(m_div.y() * div);
             qreal XposLeft  = m_range.x();
             qreal XposRigth = m_range.x() + m_range.width();
             p.drawLine(plotter->map(XposLeft, Ypos), plotter->map(XposRigth, Ypos));
 
-            if (m_axsisLeft) {
+            if (m_showLeft) {
                 pen.setColor(Qt::black);
                 pen.setStyle(Qt::SolidLine);
                 p.setPen(pen);
@@ -48,7 +48,7 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
                 QSize sz = fm.size(Qt::TextSingleLine,valueStr);
                 p.drawText(QPoint(divLen + hSpacer, y + (sz.height()/2) - hSpacer) , valueStr);
             }
-            if (m_axsisRight) {
+            if (m_showRight) {
                 pen.setColor(Qt::black);
                 pen.setStyle(Qt::SolidLine);
                 p.setPen(pen);
@@ -63,8 +63,8 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
             }
         }
     }
-    if (m_axisDivVisible[0]) {
-        maxDiv = (int)((m_range.right() - m_range.left()) / m_axisDiv.x());
+    if (m_divVisible[0]) {
+        maxDiv = (int)((m_range.right() - m_range.left()) / m_div.x());
         for (int div = -maxDiv; div <= maxDiv; div++) {
 
             if (div == 0) {
@@ -76,12 +76,12 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
             }
             p.setPen(pen);
 
-            qreal Xpos       = -(m_axisDiv.x() * div);
+            qreal Xpos       = -(m_div.x() * div);
             qreal YposTop    = m_range.y();
             qreal YposBottom = m_range.y() + m_range.height();
             p.drawLine(plotter->map(Xpos, YposTop), plotter->map(Xpos, YposBottom));
 
-            if (m_axsisBottom) {
+            if (m_showBottom) {
                 pen.setColor(Qt::black);
                 pen.setStyle(Qt::SolidLine);
                 p.setPen(pen);
@@ -93,7 +93,7 @@ void Axis::PlotAxis(QPainter& p, QPen& pen) {
                 p.drawText(QPoint(x + vSpacer, h - hSpacer), valueStr);
             }
 
-            if (m_axsisTop) {
+            if (m_showTop) {
                 pen.setColor(Qt::black);
                 pen.setStyle(Qt::SolidLine);
                 p.setPen(pen);
