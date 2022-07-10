@@ -109,5 +109,5 @@ void Axis::plot(QPainter& p, QPen& pen) {
         }
     }
 
-    zoom->PlotZoomTracks(p, pen);
+    zoom->plotTracks(p, pen);
 }

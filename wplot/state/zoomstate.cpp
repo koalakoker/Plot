@@ -10,14 +10,14 @@ void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         if (this->m_shiftKeyPressed)  {
             // Zoom Out
-            plot.m_plotter->axis->zoom->AddUndoStatus();
-            plot.m_plotter->axis->zoom->unZoom();
+            plot.m_plotter->axis->zoom->addUndoStatus();
+            plot.m_plotter->axis->zoom->goBackward();
             plot.updatePlot();
 
         } else {
             // Zoom in
-            plot.m_plotter->axis->zoom->AddUndoStatus();
-            plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
+            plot.m_plotter->axis->zoom->addUndoStatus();
+            plot.m_plotter->axis->zoom->xToCursors(event->pos());
             plot.updatePlot();
         }
     }
@@ -27,14 +27,14 @@ void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {Q_UNUSED(plot);
 void ZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_shiftKeyPressed)  {
         // Zoom Out
-        plot.m_plotter->axis->zoom->AddUndoStatus();
-        plot.m_plotter->axis->zoom->unZoom();
+        plot.m_plotter->axis->zoom->addUndoStatus();
+        plot.m_plotter->axis->zoom->goBackward();
         plot.updatePlot();
 
     } else {
         // Zoom in
-        plot.m_plotter->axis->zoom->AddUndoStatus();
-        plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
+        plot.m_plotter->axis->zoom->addUndoStatus();
+        plot.m_plotter->axis->zoom->xToCursors(event->pos());
         plot.updatePlot();
     }
 }

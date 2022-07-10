@@ -15,29 +15,29 @@ private:
 
 public:
     Zoom(Axis* axis);
-    void zoomX(qreal val);
-    void zoomY(qreal val);
-    void zoomXToCursors(QPoint point);
-    void zoomXToZoomRange(void);
-    void zoomYToZoomRange(void);
-    void unZoom(void);
-    void startZoomXTrack(QPoint point);
-    void zoomTrackScrollPixelX(int pix);
-    void startZoomYTrack(QPoint point);
-    void zoomTrackScrollPixelY(int pix);
+    void x(qreal val);
+    void y(qreal val);
+    void xToCursors(QPoint point);
+    void xToZoomRange(void);
+    void yToZoomRange(void);
+    void goBackward(void);
+    void startXTrack(QPoint point);
+    void trackScrollPixelX(int pix);
+    void startYTrack(QPoint point);
+    void trackScrollPixelY(int pix);
 
     // Undo-Redo
-    void Undo(void);
-    void Redo(void);
-    void AddUndoStatus(void);
+    void undo(void);
+    void redo(void);
+    void addUndoStatus(void);
 
-    void PlotZoomTracks(QPainter& p, QPen& pen);
+    void plotTracks(QPainter& p, QPen& pen);
 
     // Zoom tracks
-    bool zoomXTrackVisible[2] = {false, false};
-    qreal zoomXTracksPos[2] = {0.0, 0.0};
-    bool zoomYTrackVisible[2] = {false, false};
-    qreal zoomYTracksPos[2] = {0.0, 0.0};
+    bool xTrackVisible[2] = {false, false};
+    qreal xTracksPos[2] = {0.0, 0.0};
+    bool yTrackVisible[2] = {false, false};
+    qreal yTracksPos[2] = {0.0, 0.0};
 
     // Undo-Redo
     QVector<QRectF> m_undoRangeHystory;

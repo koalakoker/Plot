@@ -182,14 +182,14 @@ void WPlot::zoom_Undo(void)
 {
     if (!m_plotter)
         return;
-    m_plotter->axis->zoom->Undo();
+    m_plotter->axis->zoom->undo();
     updatePlot();
 }
 void WPlot::zoom_Redo(void)
 {
     if (!m_plotter)
         return;
-    m_plotter->axis->zoom->Redo();
+    m_plotter->axis->zoom->redo();
     updatePlot();
 }
 void WPlot::zoom(void)
@@ -380,9 +380,9 @@ void WPlot::wheelEvent(QWheelEvent* event)
     QPoint angleDelta = event->angleDelta();
     if (angleDelta != QPoint(0,0))
     {
-        m_plotter->axis->zoom->AddUndoStatus(); // To be filetered
-        m_plotter->axis->zoom->zoomX((qreal)angleDelta.y()/120);
-        m_plotter->axis->zoom->zoomY((qreal)angleDelta.x()/120);
+        m_plotter->axis->zoom->addUndoStatus(); // To be filetered
+        m_plotter->axis->zoom->x((qreal)angleDelta.y()/120);
+        m_plotter->axis->zoom->y((qreal)angleDelta.x()/120);
         updatePlot();
     }
 }
@@ -397,9 +397,9 @@ bool WPlot::event(QEvent *event)
         {
             QPinchGesture* pinchGest = static_cast<QPinchGesture *>(pinch);
             qreal factor = pinchGest->scaleFactor();
-            m_plotter->axis->zoom->AddUndoStatus(); // To be filetered
-            m_plotter->axis->zoom->zoomX((factor-1)*5);
-            m_plotter->axis->zoom->zoomY((factor-1)*5);
+            m_plotter->axis->zoom->addUndoStatus(); // To be filetered
+            m_plotter->axis->zoom->x((factor-1)*5);
+            m_plotter->axis->zoom->y((factor-1)*5);
             updatePlot();
         }
     }

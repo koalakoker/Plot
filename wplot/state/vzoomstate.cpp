@@ -9,7 +9,7 @@ VZoomState::VZoomState()
 void VZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         this->m_drag = true;
-        plot.m_plotter->axis->zoom->startZoomYTrack(event->pos());
+        plot.m_plotter->axis->zoom->startYTrack(event->pos());
         plot.m_lastPoint = event->pos();
         plot.updatePlot();
         event->accept();
@@ -17,8 +17,8 @@ void VZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 }
 void VZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
-    plot.m_plotter->axis->zoom->AddUndoStatus();
-    plot.m_plotter->axis->zoom->zoomYToZoomRange();
+    plot.m_plotter->axis->zoom->addUndoStatus();
+    plot.m_plotter->axis->zoom->yToZoomRange();
     plot.updatePlot();
     event->accept();
 }
@@ -26,7 +26,7 @@ void VZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_drag) {
         QPoint delta =  event->pos() - plot.m_lastPoint;
         plot.m_lastPoint = event->pos();
-        plot.m_plotter->axis->zoom->zoomTrackScrollPixelY(delta.y());
+        plot.m_plotter->axis->zoom->trackScrollPixelY(delta.y());
         plot.updatePlot();
         event->accept();
     }

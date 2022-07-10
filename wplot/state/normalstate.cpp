@@ -41,7 +41,7 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     {
         if (m_movingUndo) // Add undo to be done only once
         {
-            plot.m_plotter->axis->zoom->AddUndoStatus();
+            plot.m_plotter->axis->zoom->addUndoStatus();
             m_movingUndo = false;
         }
 
@@ -73,8 +73,8 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 }
 void NormalState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     // Zoom in
-    plot.m_plotter->axis->zoom->AddUndoStatus();
-    plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
+    plot.m_plotter->axis->zoom->addUndoStatus();
+    plot.m_plotter->axis->zoom->xToCursors(event->pos());
     plot.updatePlot();
 }
 void NormalState::keyPressEvent(WPlot& plot, QKeyEvent* event) {

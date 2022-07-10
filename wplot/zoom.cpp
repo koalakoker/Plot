@@ -6,11 +6,11 @@
 
 Zoom::Zoom(Axis *axis): axis(axis), m_debounce(false) {}
 
-void Zoom::PlotZoomTracks(QPainter& p, QPen& pen) {
+void Zoom::plotTracks(QPainter& p, QPen& pen) {
     QRectF m_range = axis->m_range;
     for (int i = 0; i < 2; i++) {
-        if (this->zoomXTrackVisible[i]) {
-            qreal curXpos       = this->zoomXTracksPos[i];
+        if (this->xTrackVisible[i]) {
+            qreal curXpos       = this->xTracksPos[i];
             qreal curYposTop    = m_range.y();
             qreal curYposBottom = m_range.y() + m_range.height();
 
@@ -21,8 +21,8 @@ void Zoom::PlotZoomTracks(QPainter& p, QPen& pen) {
         }
     }
     for (int i = 0; i < 2; i++) {
-        if (this->zoomYTrackVisible[i]) {
-            qreal curYpos       = this->zoomYTracksPos[i];
+        if (this->yTrackVisible[i]) {
+            qreal curYpos       = this->yTracksPos[i];
             qreal curXposLeft    = m_range.x();
             qreal curXposRigth = m_range.x()+ m_range.width();
 
@@ -34,21 +34,21 @@ void Zoom::PlotZoomTracks(QPainter& p, QPen& pen) {
     }
 }
 
-void Zoom::zoomX(qreal val)
+void Zoom::x(qreal val)
 {
     QRectF m_range = axis->m_range;
     qreal delta = m_range.width() * val * 0.05;
     axis->m_range.setLeft(m_range.left() + delta);
     axis->m_range.setRight(m_range.right() - delta);
 }
-void Zoom::zoomY(qreal val)
+void Zoom::y(qreal val)
 {
     QRectF m_range = axis->m_range;
     qreal delta = m_range.height() * val * 0.05;
     axis->m_range.setTop   (m_range.top()    + delta);
     axis->m_range.setBottom(m_range.bottom() - delta);
 }
-void Zoom::zoomXToCursors(QPoint point)
+void Zoom::xToCursors(QPoint point)
 {
     QRectF m_range = axis->m_range;
     qreal xMin,xMax;
@@ -80,7 +80,7 @@ void Zoom::zoomXToCursors(QPoint point)
 
     if ((m_range.left() == xMin) && (m_range.right() == xMax))
     {
-        zoomX(5);
+        x(5);
     }
     else
     {
@@ -88,12 +88,12 @@ void Zoom::zoomXToCursors(QPoint point)
         axis->m_range.setRight(xMax);
     }
 }
-void Zoom::zoomXToZoomRange() {
-    qreal left  = this->zoomXTracksPos[0];
-    qreal rigth = this->zoomXTracksPos[1];
+void Zoom::xToZoomRange() {
+    qreal left  = this->xTracksPos[0];
+    qreal rigth = this->xTracksPos[1];
 
     for (int i = 0; i < 2;  i++) {
-        this->zoomXTrackVisible[i] = false;
+        this->xTrackVisible[i] = false;
     }
 
     if (left == rigth) return;
@@ -105,12 +105,12 @@ void Zoom::zoomXToZoomRange() {
     axis->m_range.setLeft(left);
     axis->m_range.setRight(rigth);
 }
-void Zoom::zoomYToZoomRange(void) {
-    qreal top    = this->zoomYTracksPos[0];
-    qreal bottom = this->zoomYTracksPos[1];
+void Zoom::yToZoomRange(void) {
+    qreal top    = this->yTracksPos[0];
+    qreal bottom = this->yTracksPos[1];
 
     for (int i = 0; i < 2;  i++) {
-        this->zoomYTrackVisible[i] = false;
+        this->yTrackVisible[i] = false;
     }
 
     if (top == bottom) return;
@@ -122,33 +122,33 @@ void Zoom::zoomYToZoomRange(void) {
     axis->m_range.setTop(top);
     axis->m_range.setBottom(bottom);
 }
-void Zoom::unZoom(void)
+void Zoom::goBackward(void)
 {
-    zoomX(-5);
+    x(-5);
 }
-void Zoom::startZoomXTrack(QPoint point) {
+void Zoom::startXTrack(QPoint point) {
     for (int i = 0;  i < 2; i++) {
-        this->zoomXTrackVisible[i] = true;
-        this->zoomXTracksPos[i] = axis->plotter->invMapX(point.x());
+        this->xTrackVisible[i] = true;
+        this->xTracksPos[i] = axis->plotter->invMapX(point.x());
     }
 }
-void Zoom::zoomTrackScrollPixelX(int pix) {
+void Zoom::trackScrollPixelX(int pix) {
     QRectF m_range = axis->m_range;
-    this->zoomXTracksPos[1] += (m_range.width()  * (qreal)(pix))/(qreal)(axis->plotter->m_size.width ());
+    this->xTracksPos[1] += (m_range.width()  * (qreal)(pix))/(qreal)(axis->plotter->m_size.width ());
 }
-void Zoom::startZoomYTrack(QPoint point) {
+void Zoom::startYTrack(QPoint point) {
     for (int i = 0;  i < 2; i++) {
-        this->zoomYTrackVisible[i] = true;
-        this->zoomYTracksPos[i] = axis->plotter->invMapY(point.y());
+        this->yTrackVisible[i] = true;
+        this->yTracksPos[i] = axis->plotter->invMapY(point.y());
     }
 }
-void Zoom::zoomTrackScrollPixelY(int pix) {
+void Zoom::trackScrollPixelY(int pix) {
     QRectF m_range = axis->m_range;
-    this->zoomYTracksPos[1] -= (m_range.height()  * (qreal)(pix))/(qreal)(axis->plotter->m_size.height());
+    this->yTracksPos[1] -= (m_range.height()  * (qreal)(pix))/(qreal)(axis->plotter->m_size.height());
 }
 
 // Undo
-void Zoom::Undo(void)
+void Zoom::undo(void)
 {
     QRectF m_range = axis->m_range;
     if (!m_undoRangeHystory.isEmpty())
@@ -157,7 +157,7 @@ void Zoom::Undo(void)
         axis->m_range = m_undoRangeHystory.takeLast();
     }
 }
-void Zoom::Redo(void)
+void Zoom::redo(void)
 {
     QRectF m_range = axis->m_range;
     if (!m_redoRangeHystory.isEmpty())
@@ -166,7 +166,7 @@ void Zoom::Redo(void)
         axis->m_range = m_redoRangeHystory.takeLast();
     }
 }
-void Zoom::AddUndoStatus(void)
+void Zoom::addUndoStatus(void)
 {
     QRectF m_range = axis->m_range;
     if (!m_debounce)
