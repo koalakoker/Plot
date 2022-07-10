@@ -22,7 +22,7 @@ QImage Plotter::plot()
     pen.setWidth(1);
     p.setPen(pen);
 
-    curve->PlotData(p, pen);
+    curve->plot(p, pen);
     cursor->plot(p, pen);
     axis->plot(p, pen);
 

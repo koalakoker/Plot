@@ -6,7 +6,7 @@ Curve::Curve(Plotter* plotter, style_t style): plotter(plotter), m_style(style)
 
 }
 
-void Curve::PlotData(QPainter &p, QPen &pen) {
+void Curve::plot(QPainter &p, QPen &pen) {
     if (m_data.size() != 0)
     {
         int trackNum = m_data[0].size();

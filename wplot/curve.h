@@ -20,7 +20,7 @@ public:
     } style_t;
 
     Curve(Plotter* plotter, style_t style = LINE_STYLE);
-    void PlotData(QPainter& p, QPen& pen);
+    void plot(QPainter& p, QPen& pen);
     QVector<SData> m_data;
     style_t m_style;
 };
