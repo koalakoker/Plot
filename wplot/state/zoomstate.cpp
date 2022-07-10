@@ -1,6 +1,6 @@
 #include "wplot/state/zoomstate.h"
 #include "wplot/wplot.h"
-#include "wplot/cursors.h"
+#include "wplot/iconcursors.h"
 
 ZoomState::ZoomState()
 {
@@ -10,14 +10,14 @@ void ZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         if (this->m_shiftKeyPressed)  {
             // Zoom Out
-            plot.m_plotter->AddUndoStatus();
-            plot.m_plotter->unZoom();
+            plot.m_plotter->axis->zoom->AddUndoStatus();
+            plot.m_plotter->axis->zoom->unZoom();
             plot.updatePlot();
 
         } else {
             // Zoom in
-            plot.m_plotter->AddUndoStatus();
-            plot.m_plotter->zoomXToCursors(event->pos());
+            plot.m_plotter->axis->zoom->AddUndoStatus();
+            plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
             plot.updatePlot();
         }
     }
@@ -27,14 +27,14 @@ void ZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {Q_UNUSED(plot);
 void ZoomState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_shiftKeyPressed)  {
         // Zoom Out
-        plot.m_plotter->AddUndoStatus();
-        plot.m_plotter->unZoom();
+        plot.m_plotter->axis->zoom->AddUndoStatus();
+        plot.m_plotter->axis->zoom->unZoom();
         plot.updatePlot();
 
     } else {
         // Zoom in
-        plot.m_plotter->AddUndoStatus();
-        plot.m_plotter->zoomXToCursors(event->pos());
+        plot.m_plotter->axis->zoom->AddUndoStatus();
+        plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
         plot.updatePlot();
     }
 }
@@ -45,7 +45,7 @@ void ZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
         event->accept();
     } else if (event->key() == Qt::Key_Shift) {
         this->m_shiftKeyPressed = true;
-        plot.setCursor(Cursors::get(Cursors::ZoomOut));
+        plot.setCursor(IconCursors::get(IconCursors::ZoomOut));
     } else {
         State::keyPressEvent(plot, event);
     }
@@ -53,9 +53,9 @@ void ZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
 void ZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {
     if (event->key() == Qt::Key_Shift) {
         this->m_shiftKeyPressed = false;
-        plot.setCursor(Cursors::get(Cursors::ZoomIn));
+        plot.setCursor(IconCursors::get(IconCursors::ZoomIn));
     }
 }
 void ZoomState::setCursor(WPlot& plot) {
-    plot.setCursor(Cursors::get(Cursors::ZoomIn));
+    plot.setCursor(IconCursors::get(IconCursors::ZoomIn));
 }

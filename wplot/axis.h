@@ -1,48 +1,34 @@
 #ifndef AXIS_H
 #define AXIS_H
 
-#include <QObject>
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
+#include "zoom.h"
 
-class Axis : public QObject
+#include <QPainter>
+#include <QPen>
+
+class Plotter;
+
+class Axis
 {
-    Q_OBJECT
 public:
-    explicit Axis(QObject *parent = nullptr);
-    QRectF* m_range;
-    QPointF* m_axisDiv;
-    bool* m_axisDivVisible;
+    Axis(Plotter* plotter, QRectF range);
+    Plotter* plotter;
+    Zoom* zoom;
 
-public slots:
-    void set(void);
-    void onOk(void);
+    void PlotAxis(QPainter& p, QPen& pen);
+    void setRangeX_Min(qreal val) {m_range.setLeft  (val);}
+    void setRangeX_Max(qreal val) {m_range.setRight (val);}
+    void setRangeY_Min(qreal val) {m_range.setBottom(val);}
+    void setRangeY_Max(qreal val) {m_range.setTop   (val);}
 
-signals:
-    void axisUpdated(void);
+    bool m_axsisBottom = false;
+    bool m_axsisLeft = false;
+    bool m_axsisTop = false;
+    bool m_axsisRight = false;
 
-private:
-    QDialog m_diag;
-    QLineEdit leXmin;
-    QCheckBox cbXdiv;
-    QLabel lXdiv;
-    QLineEdit leXdiv;
-    QLineEdit leXmax;
-    QLineEdit leYmin;
-    QCheckBox cbYdiv;
-    QLabel lYdiv;
-    QLineEdit leYdiv;
-    QLineEdit leYmax;
-
-    void createDialog(void);
-    void updateDialog(void);
-
-private slots:
-    void updateParent(void);
-    void updateControlsVisibility(void);
-    void cbChanged(int state);
+    QPointF m_axisDiv;
+    QRectF m_range;
+    bool m_axisDivVisible[2] = {true, true};    
 };
 
 #endif // AXIS_H

@@ -1,12 +1,12 @@
-#include "wplot/cursors.h"
+#include "wplot/iconcursors.h"
 
 #include <QDebug>
 
-Cursors::Cursors()
+IconCursors::IconCursors()
 {
 }
 
-QCursor Cursors::get(Cursor_t type) {
+QCursor IconCursors::get(Cursor_t type) {
     QCursor cur;
     switch (type) {
     case ZoomIn:

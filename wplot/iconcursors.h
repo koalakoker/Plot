@@ -1,13 +1,13 @@
-#ifndef CURSORS_H
-#define CURSORS_H
+#ifndef ICONCURSORS_H
+#define ICONCURSORS_H
 
 #include "QtCore/qnamespace.h"
 #include "QtGui/qcursor.h"
 
-class Cursors
+class IconCursors
 {
 private:
-    Cursors();
+    IconCursors();
 public:
 
     typedef enum {
@@ -18,4 +18,4 @@ public:
     static QCursor get(Cursor_t type);
 };
 
-#endif // CURSORS_H
+#endif // ICONCURSORS_H

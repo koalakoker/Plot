@@ -5,7 +5,8 @@
 #include <QLineEdit>
 
 #include "plotter.h"
-#include "axis.h"
+#include "sdata.h"
+#include "axisproperties.h"
 
 #include "wplot/state/state.h"
 #include "wplot/state/normalstate.h"
@@ -27,7 +28,7 @@ public:
 
     QWidget* wParent;
     Plotter *m_plotter;
-    Axis m_axis;
+    AxisPropierties m_axis;
     QString m_fileName;
 
     QPoint m_lastPoint;

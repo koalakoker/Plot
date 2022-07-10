@@ -12,7 +12,10 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     wplot/axis.cpp \
-    wplot/cursors.cpp \
+    wplot/axisproperties.cpp \
+    wplot/cursor.cpp \
+    wplot/curve.cpp \
+    wplot/iconcursors.cpp \
     wplot/plotter.cpp \
     wplot/sdata.cpp \
     wplot/state/hzoomstate.cpp \
@@ -20,12 +23,16 @@ SOURCES += \
     wplot/state/state.cpp \
     wplot/state/vzoomstate.cpp \
     wplot/state/zoomstate.cpp \
-    wplot/wplot.cpp
+    wplot/wplot.cpp \
+    wplot/zoom.cpp
 
 HEADERS += \
     mainwindow.h \
     wplot/axis.h \
-    wplot/cursors.h \
+    wplot/axisproperties.h \
+    wplot/cursor.h \
+    wplot/curve.h \
+    wplot/iconcursors.h \
     wplot/plotter.h \
     wplot/sdata.h \
     wplot/state/hzoomstate.h \
@@ -33,7 +40,8 @@ HEADERS += \
     wplot/state/state.h \
     wplot/state/vzoomstate.h \
     wplot/state/zoomstate.h \
-    wplot/wplot.h
+    wplot/wplot.h \
+    wplot/zoom.h
 
 FORMS += \
     mainwindow.ui

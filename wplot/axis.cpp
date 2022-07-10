@@ -1,125 +1,113 @@
 #include "axis.h"
-#include <QDialog>
-#include <QBoxLayout>
-#include <QLabel>
-#include <QAbstractButton>
-#include <QPushButton>
-#include <QDebug>
+#include "plotter.h"
 
-Axis::Axis(QObject *parent)
-    : QObject{parent} {
-    createDialog();
+Axis::Axis(Plotter *plotter, QRectF range) : plotter(plotter) {
+    float defDiv = 5.0;
+    m_range = range;
+    m_axisDiv.setX((range.right()-range.left())/defDiv);
+    m_axisDiv.setY((range.bottom()-range.top())/defDiv);
+    zoom = new Zoom(this);
 }
-void Axis::set(void) {
-    updateDialog();
-    updateControlsVisibility();
-    m_diag.show();
-    connect(&cbXdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
-    connect(&cbYdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
-}
-void Axis::onOk(void) {
-    updateParent();
-    m_diag.close();
-}
-void Axis::createDialog(void) {
-    QVBoxLayout *layMain = new QVBoxLayout;
 
-    // Inputs
-    QHBoxLayout *layInputs = new QHBoxLayout;
+void Axis::PlotAxis(QPainter& p, QPen& pen) {
+    int maxDiv;
+    int divLen = 10;
+    int hSpacer = 5;
+    int vSpacer = 5;
+    int w = plotter->m_size.width();
+    int h = plotter->m_size.height();
 
-    // Sx
-    QVBoxLayout *layInputsSx = new QVBoxLayout;
-    QLabel* lXmin = new QLabel("x min:");
-    cbXdiv.setText("Enable x divisions");
-    lXdiv.setText("x divisions:");
-    QLabel* lXmax = new QLabel("x max:");
-    layInputsSx->addWidget(lXmin);
-    layInputsSx->addWidget(&leXmin);
-    layInputsSx->addWidget(lXmax);
-    layInputsSx->addWidget(&leXmax);
-    layInputsSx->addWidget(&cbXdiv);
-    layInputsSx->addWidget(&lXdiv);
-    layInputsSx->addWidget(&leXdiv);
-    layInputsSx->addStretch();
+    if (m_axisDivVisible[1]) {
+        maxDiv = (int)((m_range.bottom() - m_range.top()) / m_axisDiv.y());
+        for (int div = -maxDiv; div <= maxDiv; div++) {
 
-    connect(&leXmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leXdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leXmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+            if (div == 0) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+            } else {
+                pen.setColor(Qt::lightGray);
+                pen.setStyle(Qt::DotLine);
+            }
+            p.setPen(pen);
 
-    // Dx
-    QVBoxLayout *layInputsDx = new QVBoxLayout;
-    QLabel* lYmin = new QLabel("y min:");
-    cbYdiv.setText("Enable y divisions");
-    lYdiv.setText("y divisions:");
-    QLabel* lYmax = new QLabel("y max:");
-    layInputsDx->addWidget(lYmin);
-    layInputsDx->addWidget(&leYmin);
-    layInputsDx->addWidget(lYmax);
-    layInputsDx->addWidget(&leYmax);
-    layInputsDx->addWidget(&cbYdiv);
-    layInputsDx->addWidget(&lYdiv);
-    layInputsDx->addWidget(&leYdiv);
-    layInputsDx->addStretch();
+            qreal Ypos      = -(m_axisDiv.y() * div);
+            qreal XposLeft  = m_range.x();
+            qreal XposRigth = m_range.x() + m_range.width();
+            p.drawLine(plotter->map(XposLeft, Ypos), plotter->map(XposRigth, Ypos));
 
-    connect(&leYmin, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leYdiv, SIGNAL(editingFinished()), this, SLOT(updateParent()));
-    connect(&leYmax, SIGNAL(editingFinished()), this, SLOT(updateParent()));
+            if (m_axsisLeft) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
 
-    layInputs->addLayout(layInputsSx);
-    layInputs->addLayout(layInputsDx);
+                QPointF point = plotter->map(XposLeft, Ypos);
+                int y = (int)(point.y());
+                p.drawLine(QPoint(0, y), QPoint(divLen, y));
+                QString valueStr = QString::number(plotter->invMapY(y),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(divLen + hSpacer, y + (sz.height()/2) - hSpacer) , valueStr);
+            }
+            if (m_axsisRight) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
 
-    // Buttons
-    QHBoxLayout *layButtons = new QHBoxLayout;
-    QAbstractButton *bOk = new QPushButton("Ok");
-    QAbstractButton *bCancel = new QPushButton("Cancel");
-    layButtons->addWidget(bOk);
-    layButtons->addWidget(bCancel);
-
-    layMain->addLayout(layInputs);
-    layMain->addLayout(layButtons);
-
-    m_diag.setWindowTitle("Axis properties");
-    m_diag.setLayout(layMain);
-    m_diag.connect(bOk, SIGNAL(clicked()), this, SLOT(onOk()));
-    m_diag.connect(bCancel, SIGNAL(clicked()), &m_diag, SLOT(close()));
-}
-void Axis::updateDialog(void) {
-    leXmin.setText(QString::number(m_range->left()));
-    if (this->m_axisDivVisible[0]) {
-        cbXdiv.setCheckState(Qt::Checked);
-    } else {
-        cbXdiv.setCheckState(Qt::Unchecked);
+                QPointF point = plotter->map(XposRigth, Ypos);
+                int y = (int)(point.y());
+                p.drawLine(QPoint(w, y), QPoint(w - divLen, y));
+                QString valueStr = QString::number(plotter->invMapY(y),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(w - divLen - hSpacer - sz.width(), y + (sz.height()/2) - hSpacer) , valueStr);
+            }
+        }
     }
-    leXdiv.setText(QString::number(m_axisDiv->x()));
-    leXmax.setText(QString::number(m_range->right()));
-    leYmin.setText(QString::number(m_range->top()));
-    if (this->m_axisDivVisible[1]) {
-        cbYdiv.setCheckState(Qt::Checked);
-    } else {
-        cbYdiv.setCheckState(Qt::Unchecked);
+    if (m_axisDivVisible[0]) {
+        maxDiv = (int)((m_range.right() - m_range.left()) / m_axisDiv.x());
+        for (int div = -maxDiv; div <= maxDiv; div++) {
+
+            if (div == 0) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+            } else {
+                pen.setColor(Qt::lightGray);
+                pen.setStyle(Qt::DotLine);
+            }
+            p.setPen(pen);
+
+            qreal Xpos       = -(m_axisDiv.x() * div);
+            qreal YposTop    = m_range.y();
+            qreal YposBottom = m_range.y() + m_range.height();
+            p.drawLine(plotter->map(Xpos, YposTop), plotter->map(Xpos, YposBottom));
+
+            if (m_axsisBottom) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+
+                QPointF bottomPoint = plotter->map(Xpos, YposBottom);
+                int x = (int)(bottomPoint.x());
+                p.drawLine(QPoint(x, h), QPoint(x, h - divLen));
+                QString valueStr = QString::number(plotter->invMapX(x),'g', 3);
+                p.drawText(QPoint(x + vSpacer, h - hSpacer), valueStr);
+            }
+
+            if (m_axsisTop) {
+                pen.setColor(Qt::black);
+                pen.setStyle(Qt::SolidLine);
+                p.setPen(pen);
+                QFontMetrics fm(p.font());
+
+                QPointF topPoint = plotter->map(Xpos, YposTop);
+                int x = (int)(topPoint.x());
+                p.drawLine(QPoint(x, 0), QPoint(x, divLen));
+                QString valueStr = QString::number(plotter->invMapX(x),'g', 3);
+                QSize sz = fm.size(Qt::TextSingleLine,valueStr);
+                p.drawText(QPoint(x + vSpacer, sz.height()), valueStr);
+            }
+        }
     }
-    leYdiv.setText(QString::number(m_axisDiv->y()));
-    leYmax.setText(QString::number(m_range->bottom()));
-}
-void Axis::updateParent(void) {
-    m_range->setLeft  (leXmin.text().toDouble());
-    m_range->setRight (leXmax.text().toDouble());
-    m_range->setTop   (leYmin.text().toDouble());
-    m_range->setBottom(leYmax.text().toDouble());
-    m_axisDiv->setX(leXdiv.text().toDouble());
-    m_axisDiv->setY(leYdiv.text().toDouble());
-    m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
-    m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
-    emit axisUpdated();
-}
-void Axis::updateControlsVisibility(void) {
-    lXdiv.setVisible(m_axisDivVisible[0]);
-    leXdiv.setVisible(m_axisDivVisible[0]);
-    lYdiv.setVisible(m_axisDivVisible[1]);
-    leYdiv.setVisible(m_axisDivVisible[1]);
-}
-void Axis::cbChanged(int state) {
-    Q_UNUSED(state);
-    updateParent();
-    updateControlsVisibility();
+
+    zoom->PlotZoomTracks(p, pen);
 }

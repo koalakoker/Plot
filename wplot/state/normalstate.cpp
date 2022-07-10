@@ -1,5 +1,6 @@
 #include "wplot/state/normalstate.h"
 #include "wplot/wplot.h"
+#include "wplot/cursor.h"
 
 NormalState::NormalState()
 {
@@ -10,7 +11,7 @@ void NormalState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     {
         int selected = 0;
         plot.m_lastPoint = event->pos();
-        if (plot.m_plotter->onCursor(plot.m_lastPoint, selected, true))
+        if (plot.m_plotter->cursor->onCursor(plot.m_lastPoint, selected, true))
         {
 
         }
@@ -29,9 +30,9 @@ void NormalState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
         {
             m_drag = false;
         }
-        if (plot.m_plotter->getCursorDragged() != 0)
+        if (plot.m_plotter->cursor->getCursorDragged() != 0)
         {
-            plot.m_plotter->releaseCursor();
+            plot.m_plotter->cursor->releaseCursor();
         }
     }
 }
@@ -40,7 +41,7 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     {
         if (m_movingUndo) // Add undo to be done only once
         {
-            plot.m_plotter->AddUndoStatus();
+            plot.m_plotter->axis->zoom->AddUndoStatus();
             m_movingUndo = false;
         }
 
@@ -51,17 +52,17 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
         plot.updatePlot();
     }
 
-    int index = plot.m_plotter->getCursorDragged();
+    int index = plot.m_plotter->cursor->getCursorDragged();
     if (index != 0)
     {
         QPoint delta =  event->pos() - plot.m_lastPoint;
         plot.m_lastPoint = event->pos();
-        plot.m_plotter->cursorScrollPixel(index-1, delta.x());
+        plot.m_plotter->cursor->cursorScrollPixel(index-1, delta.x());
         plot.updatePlot();
     }
 
     int selected = 0;
-    if (plot.m_plotter->onCursor(event->pos(), selected, false))
+    if (plot.m_plotter->cursor->onCursor(event->pos(), selected, false))
     {
         plot.setCursor(Qt::SizeHorCursor);
     }
@@ -72,8 +73,8 @@ void NormalState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
 }
 void NormalState::mouseDoubleClickEvent(WPlot& plot, QMouseEvent* event) {
     // Zoom in
-    plot.m_plotter->AddUndoStatus();
-    plot.m_plotter->zoomXToCursors(event->pos());
+    plot.m_plotter->axis->zoom->AddUndoStatus();
+    plot.m_plotter->axis->zoom->zoomXToCursors(event->pos());
     plot.updatePlot();
 }
 void NormalState::keyPressEvent(WPlot& plot, QKeyEvent* event) {

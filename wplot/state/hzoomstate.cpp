@@ -1,6 +1,6 @@
 #include "wplot/state/hzoomstate.h"
 #include "wplot/wplot.h"
-#include "wplot/cursors.h"
+#include "wplot/iconcursors.h"
 
 HZoomState::HZoomState()
 {
@@ -9,7 +9,7 @@ HZoomState::HZoomState()
 void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         this->m_drag = true;
-        plot.m_plotter->startZoomXTrack(event->pos());
+        plot.m_plotter->axis->zoom->startZoomXTrack(event->pos());
         plot.m_lastPoint = event->pos();
         plot.updatePlot();
         event->accept();
@@ -17,8 +17,8 @@ void HZoomState::mousePressEvent(WPlot& plot, QMouseEvent* event) {
 }
 void HZoomState::mouseReleaseEvent(WPlot& plot, QMouseEvent* event) {
     this->m_drag = false;
-    plot.m_plotter->AddUndoStatus();
-    plot.m_plotter->zoomXToZoomRange();
+    plot.m_plotter->axis->zoom->AddUndoStatus();
+    plot.m_plotter->axis->zoom->zoomXToZoomRange();
     plot.updatePlot();
     event->accept();
 }
@@ -26,7 +26,7 @@ void HZoomState::mouseMoveEvent(WPlot& plot, QMouseEvent* event) {
     if (this->m_drag) {
         QPoint delta =  event->pos() - plot.m_lastPoint;
         plot.m_lastPoint = event->pos();
-        plot.m_plotter->zoomTrackScrollPixelX(delta.x());
+        plot.m_plotter->axis->zoom->zoomTrackScrollPixelX(delta.x());
         plot.updatePlot();
         event->accept();
     }
@@ -43,5 +43,5 @@ void HZoomState::keyPressEvent(WPlot& plot, QKeyEvent* event) {
 }
 void HZoomState::keyReleaseEvent(WPlot& plot, QKeyEvent* event) {Q_UNUSED(plot); Q_UNUSED(event);}
 void HZoomState::setCursor(WPlot& plot) {
-    plot.setCursor(Cursors::get(Cursors::ZoomIn));
+    plot.setCursor(IconCursors::get(IconCursors::ZoomIn));
 }

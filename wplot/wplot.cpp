@@ -1,4 +1,7 @@
 #include "wplot/wplot.h"
+#include "wplot/axis.h"
+#include "wplot/cursor.h"
+#include "wplot/curve.h"
 
 #include <QGestureEvent>
 #include <QMouseEvent>
@@ -74,12 +77,11 @@ void WPlot::createPlot(void)
 
     m_plotter = new Plotter(
                 plotterSize,
-                QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min),
-                m_data,
-                Plotter::LINE_STYLE);
-    m_axis.m_range = &m_plotter->m_range;
-    m_axis.m_axisDiv = &m_plotter->m_axisDiv;
-    m_axis.m_axisDivVisible = m_plotter->m_axisDivVisible;
+                QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min));
+    m_plotter->curve->m_data = m_data;
+    m_axis.m_range = &m_plotter->axis->m_range;
+    m_axis.m_axisDiv = &m_plotter->axis->m_axisDiv;
+    m_axis.m_axisDivVisible = m_plotter->axis->m_axisDivVisible;
     emit newPlotter();
     updatePlot();
 }
@@ -135,9 +137,8 @@ void WPlot::loadDataFile(QString fileName)
 
         m_plotter = new Plotter(
                     size(),
-                    QRectF(x_min, y_min, x_max - x_min, y_max - y_min),
-                    m_data,
-                    Plotter::LINE_STYLE);
+                    QRectF(x_min, y_min, x_max - x_min, y_max - y_min));
+        m_plotter->curve->m_data = m_data;
         emit newPlotter();
         updatePlot();
     }
@@ -181,14 +182,14 @@ void WPlot::zoom_Undo(void)
 {
     if (!m_plotter)
         return;
-    m_plotter->Undo();
+    m_plotter->axis->zoom->Undo();
     updatePlot();
 }
 void WPlot::zoom_Redo(void)
 {
     if (!m_plotter)
         return;
-    m_plotter->Redo();
+    m_plotter->axis->zoom->Redo();
     updatePlot();
 }
 void WPlot::zoom(void)
@@ -221,20 +222,20 @@ void WPlot::export_data_file(void)
     this->saveDataFile(fileName);
 }
 void WPlot::toggleAxisBottomLeft(void) {
-    this->m_plotter->m_axsisBottom ^= 1;
-    this->m_plotter->m_axsisLeft ^= 1;
+    this->m_plotter->axis->m_axsisBottom ^= 1;
+    this->m_plotter->axis->m_axsisLeft ^= 1;
     this->updatePlot();
 }
 void WPlot::toggleAxisTopRigth(void) {
-    this->m_plotter->m_axsisTop ^= 1;
-    this->m_plotter->m_axsisRight ^= 1;
+    this->m_plotter->axis->m_axsisTop ^= 1;
+    this->m_plotter->axis->m_axsisRight ^= 1;
     this->updatePlot();
 }
 
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
 {
-    bool onCursor = m_plotter->onCursor(pos, this->selectedCursor, false);
+    bool onCursor = m_plotter->cursor->onCursor(pos, this->selectedCursor, false);
 
     QMenu contextMenu("Context menu", this);
 
@@ -298,11 +299,11 @@ void WPlot::ShowContextMenu(QPoint pos)
 
 // Cursor functions
 void WPlot::addCursor(void) {
-    m_plotter->addCursor();
+    m_plotter->cursor->addCursor();
     updatePlot();
 }
 void WPlot::removeCursor(void) {
-    m_plotter->removeCursor(this->selectedCursor);
+    m_plotter->cursor->removeCursor(this->selectedCursor);
     updatePlot();
 }
 void WPlot::setCursorPos(void) {
@@ -331,7 +332,7 @@ void WPlot::cursorNewPos(void) {
     bool isValid;
     qreal value = inputText.toDouble(&isValid);
     if (isValid) {
-        this->m_plotter->setCursorPos(this->selectedCursor, value);
+        this->m_plotter->cursor->setCursorPos(this->selectedCursor, value);
         this->updatePlot();
     }
     this->setCurPosDiag->close();
@@ -379,9 +380,9 @@ void WPlot::wheelEvent(QWheelEvent* event)
     QPoint angleDelta = event->angleDelta();
     if (angleDelta != QPoint(0,0))
     {
-        m_plotter->AddUndoStatus(); // To be filetered
-        m_plotter->zoomX((qreal)angleDelta.y()/120);
-        m_plotter->zoomY((qreal)angleDelta.x()/120);
+        m_plotter->axis->zoom->AddUndoStatus(); // To be filetered
+        m_plotter->axis->zoom->zoomX((qreal)angleDelta.y()/120);
+        m_plotter->axis->zoom->zoomY((qreal)angleDelta.x()/120);
         updatePlot();
     }
 }
@@ -396,9 +397,9 @@ bool WPlot::event(QEvent *event)
         {
             QPinchGesture* pinchGest = static_cast<QPinchGesture *>(pinch);
             qreal factor = pinchGest->scaleFactor();
-            m_plotter->AddUndoStatus(); // To be filetered
-            m_plotter->zoomX((factor-1)*5);
-            m_plotter->zoomY((factor-1)*5);
+            m_plotter->axis->zoom->AddUndoStatus(); // To be filetered
+            m_plotter->axis->zoom->zoomX((factor-1)*5);
+            m_plotter->axis->zoom->zoomY((factor-1)*5);
             updatePlot();
         }
     }
