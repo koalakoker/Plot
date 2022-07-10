@@ -46,6 +46,8 @@ public slots:
     void zoom(void);
     void hZoom(void);
     void vZoom(void);
+    void fullHZoom(void);
+    void fullVZoom(void);
     void toggleAxisBottomLeft(void);
     void toggleAxisTopRigth(void);
 

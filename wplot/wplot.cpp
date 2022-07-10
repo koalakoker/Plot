@@ -208,6 +208,12 @@ void WPlot::vZoom(void)
     this->state = &this->vZoomState;
     this->state->setCursor(*this);
 }
+void WPlot::fullHZoom(void) {
+
+}
+void WPlot::fullVZoom(void) {
+
+}
 
 void WPlot::open_data_file(void)
 {
@@ -240,60 +246,88 @@ void WPlot::ShowContextMenu(QPoint pos)
 
     QMenu contextMenu("Context menu", this);
 
+    // Cursor Menu
+    QMenu cursorMenu("Cursor", this);
+
     QAction addCursorAction("Add cursor", this);
     connect(&addCursorAction, SIGNAL(triggered()), this, SLOT(addCursor()));
-    contextMenu.addAction(&addCursorAction);
+    cursorMenu.addAction(&addCursorAction);
 
     QAction removeCursorAction("Remove cursor", this);
     QAction setCursorPosAction("Set cursor", this);
     if (onCursor) {
         connect(&removeCursorAction, SIGNAL(triggered()), this, SLOT(removeCursor()));
-        contextMenu.addAction(&removeCursorAction);
+        cursorMenu.addAction(&removeCursorAction);
 
         connect(&setCursorPosAction, SIGNAL(triggered()), this, SLOT(setCursorPos()));
-        contextMenu.addAction(&setCursorPosAction);
+        cursorMenu.addAction(&setCursorPosAction);
     }
+
+    contextMenu.addMenu(&cursorMenu);
+
+    // Zoom Menu
+    QMenu zoomMenu("Zoom", this);
 
     QAction zoomAction("Zoom", this);
     connect(&zoomAction, SIGNAL(triggered()), this, SLOT(zoom()));
-    contextMenu.addAction(&zoomAction);
+    zoomMenu.addAction(&zoomAction);
 
     QAction hZoomAction("Horizontal zoom", this);
     connect(&hZoomAction, SIGNAL(triggered()), this, SLOT(hZoom()));
-    contextMenu.addAction(&hZoomAction);
+    zoomMenu.addAction(&hZoomAction);
 
     QAction vZoomAction("Vertical zoom", this);
     connect(&vZoomAction, SIGNAL(triggered()), this, SLOT(vZoom()));
-    contextMenu.addAction(&vZoomAction);
+    zoomMenu.addAction(&vZoomAction);
 
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
-    contextMenu.addAction(&zoomUndoAction);
+    zoomMenu.addAction(&zoomUndoAction);
 
     QAction zoomRedoAction("Zoom Redo", this);
     connect(&zoomRedoAction, SIGNAL(triggered()), this, SLOT(zoom_Redo()));
-    contextMenu.addAction(&zoomRedoAction);
+    zoomMenu.addAction(&zoomRedoAction);
+
+    QAction zoomFullHorizontalAction("Full hor. range", this);
+    connect(&zoomFullHorizontalAction, SIGNAL(triggered()), this,SLOT(fullHZoom));
+    zoomMenu.addAction(&zoomFullHorizontalAction);
+
+    QAction zoomFullVerticalAction("Full ver. range", this);
+    connect(&zoomFullVerticalAction, SIGNAL(triggered()), this,SLOT(fullVZoom));
+    zoomMenu.addAction(&zoomFullVerticalAction);
+
+    contextMenu.addMenu(&zoomMenu);
+
+    // Save/Load Menu
+    QMenu saveLoadMenu("Save/Load", this);
 
     QAction openDataAction("Load data", this);
     connect(&openDataAction, SIGNAL(triggered()), this, SLOT(open_data_file()));
-    contextMenu.addAction(&openDataAction);
+    saveLoadMenu.addAction(&openDataAction);
 
     QAction exportDataAction("Save data", this);
     connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
-    contextMenu.addAction(&exportDataAction);
+    saveLoadMenu.addAction(&exportDataAction);
+
+    contextMenu.addMenu(&saveLoadMenu);
+
+    // Axis menu
+    QMenu axisMenu("Axis", this);
 
     QAction setAxisAction("Axis properties", this);
     connect(&setAxisAction, SIGNAL(triggered()), &this->m_axis, SLOT(set()));
     connect(&this->m_axis, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
-    contextMenu.addAction(&setAxisAction);
+    axisMenu.addAction(&setAxisAction);
 
     QAction toggleAxisBottomLeftAction("Toggle axis bottom left", this);
     connect(&toggleAxisBottomLeftAction, SIGNAL(triggered()), this, SLOT(toggleAxisBottomLeft()));
-    contextMenu.addAction(&toggleAxisBottomLeftAction);
+    axisMenu.addAction(&toggleAxisBottomLeftAction);
 
     QAction toggleAxisTopRigthAction("Toggle axis top rigth", this);
     connect(&toggleAxisTopRigthAction, SIGNAL(triggered()), this, SLOT(toggleAxisTopRigth()));
-    contextMenu.addAction(&toggleAxisTopRigthAction);
+    axisMenu.addAction(&toggleAxisTopRigthAction);
+
+    contextMenu.addMenu(&axisMenu);
 
     contextMenu.exec(mapToGlobal(pos));
 }

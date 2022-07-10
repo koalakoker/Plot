@@ -11,13 +11,8 @@ int main(int argc, char *argv[])
 
     WPlot plot(&w);
     float m = 10;
-    for (int i = 0; i < 360; i++) {
-        plot.addPoint(i, SData(m*sin(2 * i * M_PI / 180.0f),
-                               m*sin((M_PI*2/6) + 2 * i * M_PI / 180.0f),
-                               m*sin((2 * M_PI*2/6) + 2 * i * M_PI / 180.0f),
-                               m*sin((3 * M_PI*2/6) + 2 * i * M_PI / 180.0f),
-                               m*sin((4 * M_PI*2/6) + 2 * i * M_PI / 180.0f),
-                               m*sin((5 * M_PI*2/6) + 2 * i * M_PI / 180.0f)));
+    for (int i = 0; i < (360*3); i++) {
+        plot.addPoint(i, SData(m*sin(i * M_PI / 180.0f) + (m/4)*sin(3 * i * M_PI/180)));
     }
     plot.createPlot();
     w.show();
