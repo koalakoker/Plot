@@ -60,11 +60,10 @@ void WPlot::addPoint(double t, SData y)
 // Create plot
 void WPlot::createPlot(void)
 {
-    qreal x_min = 0, x_max = 0;
     if (m_data.size() != 0)
     {
-        x_min = m_data[0][0];
-        x_max = m_data[m_data.size()-1][0];
+        m_x_min = m_data[0][0];
+        m_x_max = m_data[m_data.size()-1][0];
     }
 
     QSize plotterSize;
@@ -77,7 +76,7 @@ void WPlot::createPlot(void)
 
     m_plotter = new Plotter(
                 plotterSize,
-                QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min));
+                QRectF(m_x_min, m_y_min, m_x_max - m_x_min, m_y_max - m_y_min));
     m_plotter->curve->m_data = m_data;
     m_axisProps.m_range = &m_plotter->axis->m_range;
     m_axisProps.m_axisDiv = &m_plotter->axis->m_div;
@@ -123,11 +122,10 @@ void WPlot::loadDataFile(QString fileName)
         }
         m_fileName = fileName;
 
-        qreal x_min = 0, x_max = 0;
         if (m_data.size() != 0)
         {
-            x_min = m_data[0][0];
-            x_max = m_data[m_data.size()-1][0];
+            m_x_min = m_data[0][0];
+            m_x_max = m_data[m_data.size()-1][0];
         }
 
         if (m_plotter)
@@ -137,7 +135,7 @@ void WPlot::loadDataFile(QString fileName)
 
         m_plotter = new Plotter(
                     size(),
-                    QRectF(x_min, y_min, x_max - x_min, y_max - y_min));
+                    QRectF(m_x_min, y_min, m_x_max - m_x_min, y_max - y_min));
         m_plotter->curve->m_data = m_data;
         m_axisProps.m_range = &m_plotter->axis->m_range;
         emit newPlotter();
@@ -209,10 +207,14 @@ void WPlot::vZoom(void)
     this->state->setCursor(*this);
 }
 void WPlot::fullHZoom(void) {
-
+    m_plotter->axis->m_range.setLeft(m_x_min);
+    m_plotter->axis->m_range.setRight(m_x_max);
+    updatePlot();
 }
 void WPlot::fullVZoom(void) {
-
+    m_plotter->axis->m_range.setBottom(m_y_min);
+    m_plotter->axis->m_range.setTop(m_y_max);
+    updatePlot();
 }
 
 void WPlot::open_data_file(void)
