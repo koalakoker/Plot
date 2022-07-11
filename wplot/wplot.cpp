@@ -207,13 +207,13 @@ void WPlot::vZoom(void)
     this->state->setCursor(*this);
 }
 void WPlot::fullHZoom(void) {
-    m_plotter->axis->m_range.setLeft(m_x_min);
-    m_plotter->axis->m_range.setRight(m_x_max);
+    m_plotter->axis->zoom->addUndoStatus();
+    m_plotter->axis->zoom->xToFullRange();
     updatePlot();
 }
 void WPlot::fullVZoom(void) {
-    m_plotter->axis->m_range.setBottom(m_y_min);
-    m_plotter->axis->m_range.setTop(m_y_max);
+    m_plotter->axis->zoom->addUndoStatus();
+    m_plotter->axis->zoom->yToFullRange();
     updatePlot();
 }
 

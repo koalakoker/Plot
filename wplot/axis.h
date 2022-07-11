@@ -32,6 +32,8 @@ public:
     bool m_showRight = false;
 
     QRectF m_range;
+    double m_x_max = 0, m_x_min = 0;
+    double m_y_max = 0, m_y_min = 0;
     QPointF m_div;
     bool m_divVisible[2] = {true, true};
 };

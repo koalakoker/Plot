@@ -4,6 +4,10 @@
 Axis::Axis(Plotter *plotter, QRectF range) : plotter(plotter) {
     float defDiv = 5.0;
     m_range = range;
+    m_x_min = range.left();
+    m_x_max = range.right();
+    m_y_min = range.bottom();
+    m_y_max = range.top();
     m_div.setX((range.right()-range.left())/defDiv);
     m_div.setY((range.bottom()-range.top())/defDiv);
     zoom = new Zoom(this);
