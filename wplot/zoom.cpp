@@ -122,6 +122,13 @@ void Zoom::yToZoomRange(void) {
     axis->m_range.setTop(top);
     axis->m_range.setBottom(bottom);
 }
+void Zoom::xToFullRange(void) {
+
+
+}
+void Zoom::yToFullRange(void) {
+
+}
 void Zoom::goBackward(void)
 {
     x(-5);

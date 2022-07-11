@@ -21,6 +21,7 @@ public:
 
     Curve(Plotter* plotter, style_t style = LINE_STYLE);
     void plot(QPainter& p, QPen& pen);
+    QRectF getFullExtent(void);
     QVector<SData> m_data;
     style_t m_style;
 };

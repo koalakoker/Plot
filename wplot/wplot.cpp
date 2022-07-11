@@ -79,9 +79,9 @@ void WPlot::createPlot(void)
                 plotterSize,
                 QRectF(x_min, m_y_min, x_max - x_min, m_y_max - m_y_min));
     m_plotter->curve->m_data = m_data;
-    m_axis.m_range = &m_plotter->axis->m_range;
-    m_axis.m_axisDiv = &m_plotter->axis->m_div;
-    m_axis.m_axisDivVisible = m_plotter->axis->m_divVisible;
+    m_axisProps.m_range = &m_plotter->axis->m_range;
+    m_axisProps.m_axisDiv = &m_plotter->axis->m_div;
+    m_axisProps.m_axisDivVisible = m_plotter->axis->m_divVisible;
     emit newPlotter();
     updatePlot();
 }
@@ -139,7 +139,7 @@ void WPlot::loadDataFile(QString fileName)
                     size(),
                     QRectF(x_min, y_min, x_max - x_min, y_max - y_min));
         m_plotter->curve->m_data = m_data;
-        m_axis.m_range = &m_plotter->axis->m_range;
+        m_axisProps.m_range = &m_plotter->axis->m_range;
         emit newPlotter();
         updatePlot();
     }
@@ -289,11 +289,11 @@ void WPlot::ShowContextMenu(QPoint pos)
     zoomMenu.addAction(&zoomRedoAction);
 
     QAction zoomFullHorizontalAction("Full hor. range", this);
-    connect(&zoomFullHorizontalAction, SIGNAL(triggered()), this,SLOT(fullHZoom));
+    connect(&zoomFullHorizontalAction, SIGNAL(triggered()), this,SLOT(fullHZoom()));
     zoomMenu.addAction(&zoomFullHorizontalAction);
 
     QAction zoomFullVerticalAction("Full ver. range", this);
-    connect(&zoomFullVerticalAction, SIGNAL(triggered()), this,SLOT(fullVZoom));
+    connect(&zoomFullVerticalAction, SIGNAL(triggered()), this,SLOT(fullVZoom()));
     zoomMenu.addAction(&zoomFullVerticalAction);
 
     contextMenu.addMenu(&zoomMenu);
@@ -315,8 +315,8 @@ void WPlot::ShowContextMenu(QPoint pos)
     QMenu axisMenu("Axis", this);
 
     QAction setAxisAction("Axis properties", this);
-    connect(&setAxisAction, SIGNAL(triggered()), &this->m_axis, SLOT(set()));
-    connect(&this->m_axis, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
+    connect(&setAxisAction, SIGNAL(triggered()), &this->m_axisProps, SLOT(set()));
+    connect(&this->m_axisProps, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
     axisMenu.addAction(&setAxisAction);
 
     QAction toggleAxisBottomLeftAction("Toggle axis bottom left", this);

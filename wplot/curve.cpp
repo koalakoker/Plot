@@ -1,5 +1,6 @@
 #include "curve.h"
 #include "plotter.h"
+#include <QDebug>
 
 Curve::Curve(Plotter* plotter, style_t style): plotter(plotter), m_style(style)
 {
@@ -88,3 +89,37 @@ void Curve::plot(QPainter &p, QPen &pen) {
     }
 
 }
+QRectF Curve::getFullExtent(void) {
+    QRectF fullExtent;
+    qreal x_min = 0, x_max = 0;
+    if (m_data.size() != 0)
+    {
+        x_min = m_data[0][0];
+        x_max = m_data[m_data.size()-1][0];
+    }
+    fullExtent.setLeft(x_min);
+    fullExtent.setRight(x_max);
+
+    qreal y_min = 0, y_max = 0;
+    foreach (SData sdata, m_data)
+    {
+        for (int i = 1; i < sdata.size(); i++)
+        {
+            double val = sdata[i];
+
+            if (val > y_max)
+            {
+                y_max = val;
+            }
+
+            if (val < y_min)
+            {
+                y_min = val;
+            }
+
+        }
+    }
+    fullExtent.setBottom(y_max);
+    fullExtent.setTop(y_min);
+    return fullExtent;
+};

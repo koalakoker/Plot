@@ -20,6 +20,8 @@ public:
     void xToCursors(QPoint point);
     void xToZoomRange(void);
     void yToZoomRange(void);
+    void xToFullRange(void);
+    void yToFullRange(void);
     void goBackward(void);
     void startXTrack(QPoint point);
     void trackScrollPixelX(int pix);

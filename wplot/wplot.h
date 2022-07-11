@@ -28,7 +28,7 @@ public:
 
     QWidget* wParent;
     Plotter *m_plotter;
-    AxisPropierties m_axis;
+    AxisPropierties m_axisProps;
     QString m_fileName;
 
     QPoint m_lastPoint;
