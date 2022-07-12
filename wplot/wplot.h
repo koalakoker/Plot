@@ -72,6 +72,8 @@ private slots:
     void cursorNewPos(void);
     void open_data_file(void);
     void export_data_file(void);
+    void saveSettings(void);
+    void loadSettings(void);
 
 protected:
     void keyPressEvent(QKeyEvent* event);

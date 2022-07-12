@@ -16,6 +16,8 @@ SOURCES += \
     wplot/cursor.cpp \
     wplot/curve.cpp \
     wplot/iconcursors.cpp \
+    wplot/jsondata.cpp \
+    wplot/jsonserial.cpp \
     wplot/plotter.cpp \
     wplot/sdata.cpp \
     wplot/state/hzoomstate.cpp \
@@ -33,6 +35,8 @@ HEADERS += \
     wplot/cursor.h \
     wplot/curve.h \
     wplot/iconcursors.h \
+    wplot/jsondata.h \
+    wplot/jsonserial.h \
     wplot/plotter.h \
     wplot/sdata.h \
     wplot/state/hzoomstate.h \

@@ -2,6 +2,7 @@
 #include "wplot/axis.h"
 #include "wplot/cursor.h"
 #include "wplot/curve.h"
+#include "wplot/jsonserial.h"
 
 #include <QGestureEvent>
 #include <QMouseEvent>
@@ -219,7 +220,7 @@ void WPlot::fullVZoom(void) {
 
 void WPlot::open_data_file(void)
 {
-    QString fileName = QFileDialog::getOpenFileName(this,"Open data file","","*.*");
+    QString fileName = QFileDialog::getOpenFileName(this,"Open data file","","Data files (*.dat);;Text files (*.txt);;All files (*.*)");
     if (fileName != "")
     {
         this->loadDataFile(fileName);
@@ -227,8 +228,48 @@ void WPlot::open_data_file(void)
 }
 void WPlot::export_data_file(void)
 {
-    QString fileName = QFileDialog::getSaveFileName(this,"Export data file","","*.*");
-    this->saveDataFile(fileName);
+    QString fileName = QFileDialog::getSaveFileName(this,"Export data file","","Data files (*.dat);;Text files (*.txt);;All files (*.*)");
+    if (fileName!= "") {
+        this->saveDataFile(fileName);
+    }
+}
+void WPlot::saveSettings(void) {
+    QString fileName = QFileDialog::getSaveFileName(this,"Export setting file","","JSON files (*.json);;All files (*.*)");
+    if (fileName != "") {
+        JSONSerial js;
+        js.add("Xmin", m_plotter->axis->m_range.left());
+        js.add("Xmax", m_plotter->axis->m_range.right());
+        js.add("Ymin", m_plotter->axis->m_range.bottom());
+        js.add("Ymax", m_plotter->axis->m_range.top());
+        js.add("Xdiv", m_plotter->axis->m_div.x());
+        js.add("Ydiv", m_plotter->axis->m_div.y());
+        js.add("XdivVisible", m_plotter->axis->m_divVisible[0]);
+        js.add("YdivVisible", m_plotter->axis->m_divVisible[1]);
+        js.save(fileName);
+    }
+}
+void WPlot::loadSettings(void) {
+    QString fileName = QFileDialog::getOpenFileName(this,"Open setting file","","JSON files (*.json);;All files (*.*)");
+    if (fileName != "") {
+        JSONSerial js;
+        js.load(fileName);
+        double value;
+        js.read("Xmin", value);
+        m_plotter->axis->m_range.setLeft(value);
+        js.read("Xmax", value);
+        m_plotter->axis->m_range.setRight(value);
+        js.read("Ymin", value);
+        m_plotter->axis->m_range.setBottom(value);
+        js.read("Ymax", value);
+        m_plotter->axis->m_range.setTop(value);
+        js.read("Xdiv", value);
+        m_plotter->axis->m_div.setX(value);
+        js.read("Ydiv", value);
+        m_plotter->axis->m_div.setY(value);
+        js.read("XdivVisible", m_plotter->axis->m_divVisible[0]);
+        js.read("YdivVisible", m_plotter->axis->m_divVisible[1]);
+        updatePlot();
+    }
 }
 void WPlot::toggleAxisBottomLeft(void) {
     this->m_plotter->axis->m_showBottom ^= 1;
@@ -282,6 +323,8 @@ void WPlot::ShowContextMenu(QPoint pos)
     connect(&vZoomAction, SIGNAL(triggered()), this, SLOT(vZoom()));
     zoomMenu.addAction(&vZoomAction);
 
+    zoomMenu.addSeparator();
+
     QAction zoomUndoAction("Zoom Undo", this);
     connect(&zoomUndoAction, SIGNAL(triggered()), this, SLOT(zoom_Undo()));
     zoomMenu.addAction(&zoomUndoAction);
@@ -289,6 +332,8 @@ void WPlot::ShowContextMenu(QPoint pos)
     QAction zoomRedoAction("Zoom Redo", this);
     connect(&zoomRedoAction, SIGNAL(triggered()), this, SLOT(zoom_Redo()));
     zoomMenu.addAction(&zoomRedoAction);
+
+    zoomMenu.addSeparator();
 
     QAction zoomFullHorizontalAction("Full hor. range", this);
     connect(&zoomFullHorizontalAction, SIGNAL(triggered()), this,SLOT(fullHZoom()));
@@ -303,13 +348,23 @@ void WPlot::ShowContextMenu(QPoint pos)
     // Save/Load Menu
     QMenu saveLoadMenu("Save/Load", this);
 
+    QAction exportDataAction("Save data", this);
+    connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
+    saveLoadMenu.addAction(&exportDataAction);
+
     QAction openDataAction("Load data", this);
     connect(&openDataAction, SIGNAL(triggered()), this, SLOT(open_data_file()));
     saveLoadMenu.addAction(&openDataAction);
 
-    QAction exportDataAction("Save data", this);
-    connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
-    saveLoadMenu.addAction(&exportDataAction);
+    saveLoadMenu.addSeparator();
+
+    QAction saveSettingsAction("Save settings", this);
+    connect(&saveSettingsAction, SIGNAL(triggered()), this, SLOT(saveSettings()));
+    saveLoadMenu.addAction(&saveSettingsAction);
+
+    QAction loadSettingsAction("Load settings", this);
+    connect(&loadSettingsAction, SIGNAL(triggered()), this, SLOT(loadSettings()));
+    saveLoadMenu.addAction(&loadSettingsAction);
 
     contextMenu.addMenu(&saveLoadMenu);
 
