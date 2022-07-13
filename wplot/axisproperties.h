@@ -6,15 +6,16 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QComboBox>
+
+#include "axis.h"
 
 class AxisPropierties : public QObject
 {
     Q_OBJECT
 public:
     explicit AxisPropierties(QObject *parent = nullptr);
-    QRectF* m_range;
-    QPointF* m_axisDiv;
-    bool* m_axisDivVisible;
+    Axis* axis;
 
 public slots:
     void set(void);
@@ -35,6 +36,12 @@ private:
     QLabel lYdiv;
     QLineEdit leYdiv;
     QLineEdit leYmax;
+    enum {
+        SHOW_NONE,
+        SHOW_BOTTOM_LEFT,
+        SHOW_TOP_RIGHT
+    };
+    QComboBox cbLabelsPosBox;
 
     void createDialog(void);
     void updateDialog(void);
@@ -43,6 +50,7 @@ private slots:
     void updateParent(void);
     void updateControlsVisibility(void);
     void cbChanged(int state);
+    void cbLabelsPosBoxChanged(int index);
 };
 
 #endif // AXISPROPERTIES_H

@@ -79,9 +79,7 @@ void WPlot::createPlot(void)
                 plotterSize,
                 QRectF(m_x_min, m_y_min, m_x_max - m_x_min, m_y_max - m_y_min));
     m_plotter->curve->m_data = m_data;
-    m_axisProps.m_range = &m_plotter->axis->m_range;
-    m_axisProps.m_axisDiv = &m_plotter->axis->m_div;
-    m_axisProps.m_axisDivVisible = m_plotter->axis->m_divVisible;
+    m_axisProps.axis = m_plotter->axis;
     emit newPlotter();
     updatePlot();
 }
@@ -138,7 +136,7 @@ void WPlot::loadDataFile(QString fileName)
                     size(),
                     QRectF(m_x_min, y_min, m_x_max - m_x_min, y_max - y_min));
         m_plotter->curve->m_data = m_data;
-        m_axisProps.m_range = &m_plotter->axis->m_range;
+        m_axisProps.axis = m_plotter->axis;
         emit newPlotter();
         updatePlot();
     }
@@ -245,6 +243,10 @@ void WPlot::saveSettings(void) {
         js.add("Ydiv", m_plotter->axis->m_div.y());
         js.add("XdivVisible", m_plotter->axis->m_divVisible[0]);
         js.add("YdivVisible", m_plotter->axis->m_divVisible[1]);
+        js.add("showBottom", m_plotter->axis->m_showBottom);
+        js.add("showLeft", m_plotter->axis->m_showLeft);
+        js.add("showTop", m_plotter->axis->m_showTop);
+        js.add("showRight", m_plotter->axis->m_showRight);
         js.save(fileName);
     }
 }
@@ -268,18 +270,12 @@ void WPlot::loadSettings(void) {
         m_plotter->axis->m_div.setY(value);
         js.read("XdivVisible", m_plotter->axis->m_divVisible[0]);
         js.read("YdivVisible", m_plotter->axis->m_divVisible[1]);
+        js.read("showBottom", m_plotter->axis->m_showBottom);
+        js.read("showLeft", m_plotter->axis->m_showLeft);
+        js.read("showTop", m_plotter->axis->m_showTop);
+        js.read("showRight", m_plotter->axis->m_showRight);
         updatePlot();
     }
-}
-void WPlot::toggleAxisBottomLeft(void) {
-    this->m_plotter->axis->m_showBottom ^= 1;
-    this->m_plotter->axis->m_showLeft ^= 1;
-    this->updatePlot();
-}
-void WPlot::toggleAxisTopRigth(void) {
-    this->m_plotter->axis->m_showTop ^= 1;
-    this->m_plotter->axis->m_showRight ^= 1;
-    this->updatePlot();
 }
 
 // Context Menu
@@ -375,14 +371,6 @@ void WPlot::ShowContextMenu(QPoint pos)
     connect(&setAxisAction, SIGNAL(triggered()), &this->m_axisProps, SLOT(set()));
     connect(&this->m_axisProps, SIGNAL(axisUpdated()), this, SLOT(updatePlot()));
     axisMenu.addAction(&setAxisAction);
-
-    QAction toggleAxisBottomLeftAction("Toggle axis bottom left", this);
-    connect(&toggleAxisBottomLeftAction, SIGNAL(triggered()), this, SLOT(toggleAxisBottomLeft()));
-    axisMenu.addAction(&toggleAxisBottomLeftAction);
-
-    QAction toggleAxisTopRigthAction("Toggle axis top rigth", this);
-    connect(&toggleAxisTopRigthAction, SIGNAL(triggered()), this, SLOT(toggleAxisTopRigth()));
-    axisMenu.addAction(&toggleAxisTopRigthAction);
 
     contextMenu.addMenu(&axisMenu);
 

@@ -48,8 +48,6 @@ public slots:
     void vZoom(void);
     void fullHZoom(void);
     void fullVZoom(void);
-    void toggleAxisBottomLeft(void);
-    void toggleAxisTopRigth(void);
 
 signals:
     void newPlotter(void);

@@ -16,6 +16,7 @@ void AxisPropierties::set(void) {
     m_diag.show();
     connect(&cbXdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
     connect(&cbYdiv, SIGNAL(stateChanged(int)), this, SLOT(cbChanged(int)));
+    connect(&cbLabelsPosBox, SIGNAL(currentIndexChanged(int)), this, SLOT(cbLabelsPosBoxChanged(int)));
 }
 void AxisPropierties::onOk(void) {
     updateParent();
@@ -68,6 +69,11 @@ void AxisPropierties::createDialog(void) {
     layInputs->addLayout(layInputsSx);
     layInputs->addLayout(layInputsDx);
 
+    // Axis label show
+    cbLabelsPosBox.addItem("Axis label none", QVariant(SHOW_NONE));
+    cbLabelsPosBox.addItem("Axis label bottom left", QVariant(SHOW_BOTTOM_LEFT));
+    cbLabelsPosBox.addItem("Axis label top right", QVariant(SHOW_TOP_RIGHT));
+
     // Buttons
     QHBoxLayout *layButtons = new QHBoxLayout;
     QAbstractButton *bOk = new QPushButton("Ok");
@@ -76,6 +82,7 @@ void AxisPropierties::createDialog(void) {
     layButtons->addWidget(bCancel);
 
     layMain->addLayout(layInputs);
+    layMain->addWidget(&cbLabelsPosBox);
     layMain->addLayout(layButtons);
 
     m_diag.setWindowTitle("Axis properties");
@@ -84,42 +91,80 @@ void AxisPropierties::createDialog(void) {
     m_diag.connect(bCancel, SIGNAL(clicked()), &m_diag, SLOT(close()));
 }
 void AxisPropierties::updateDialog(void) {
-    leXmin.setText(QString::number(m_range->left()));
-    if (this->m_axisDivVisible[0]) {
+    leXmin.setText(QString::number(axis->m_range.left()));
+    if (axis->m_divVisible[0]) {
         cbXdiv.setCheckState(Qt::Checked);
     } else {
         cbXdiv.setCheckState(Qt::Unchecked);
     }
-    leXdiv.setText(QString::number(m_axisDiv->x()));
-    leXmax.setText(QString::number(m_range->right()));
-    leYmin.setText(QString::number(m_range->top()));
-    if (this->m_axisDivVisible[1]) {
+    leXdiv.setText(QString::number(axis->m_div.x()));
+    leXmax.setText(QString::number(axis->m_range.right()));
+    leYmin.setText(QString::number(axis->m_range.top()));
+    if (axis->m_divVisible[1]) {
         cbYdiv.setCheckState(Qt::Checked);
     } else {
         cbYdiv.setCheckState(Qt::Unchecked);
     }
-    leYdiv.setText(QString::number(m_axisDiv->y()));
-    leYmax.setText(QString::number(m_range->bottom()));
+    leYdiv.setText(QString::number(axis->m_div.y()));
+    leYmax.setText(QString::number(axis->m_range.bottom()));
+
+    if ((axis->m_showBottom) || (axis->m_showLeft)) {
+        cbLabelsPosBox.setCurrentIndex(SHOW_BOTTOM_LEFT);
+    } else if ((axis->m_showTop) || (axis->m_showRight)) {
+        cbLabelsPosBox.setCurrentIndex(SHOW_TOP_RIGHT);
+    } else {
+        cbLabelsPosBox.setCurrentIndex(SHOW_NONE);
+    }
 }
 void AxisPropierties::updateParent(void) {
-    m_range->setLeft  (leXmin.text().toDouble());
-    m_range->setRight (leXmax.text().toDouble());
-    m_range->setTop   (leYmin.text().toDouble());
-    m_range->setBottom(leYmax.text().toDouble());
-    m_axisDiv->setX(leXdiv.text().toDouble());
-    m_axisDiv->setY(leYdiv.text().toDouble());
-    m_axisDivVisible[0] = (cbXdiv.checkState() == Qt::Checked);
-    m_axisDivVisible[1] = (cbYdiv.checkState() == Qt::Checked);
+    axis->m_range.setLeft  (leXmin.text().toDouble());
+    axis->m_range.setRight (leXmax.text().toDouble());
+    axis->m_range.setTop   (leYmin.text().toDouble());
+    axis->m_range.setBottom(leYmax.text().toDouble());
+    axis->m_div.setX(leXdiv.text().toDouble());
+    axis->m_div.setY(leYdiv.text().toDouble());
+    axis->m_divVisible[0] = (cbXdiv.checkState() == Qt::Checked);
+    axis->m_divVisible[1] = (cbYdiv.checkState() == Qt::Checked);
     emit axisUpdated();
 }
 void AxisPropierties::updateControlsVisibility(void) {
-    lXdiv.setVisible(m_axisDivVisible[0]);
-    leXdiv.setVisible(m_axisDivVisible[0]);
-    lYdiv.setVisible(m_axisDivVisible[1]);
-    leYdiv.setVisible(m_axisDivVisible[1]);
+    lXdiv.setVisible(axis->m_divVisible[0]);
+    leXdiv.setVisible(axis->m_divVisible[0]);
+    lYdiv.setVisible(axis->m_divVisible[1]);
+    leYdiv.setVisible(axis->m_divVisible[1]);
 }
 void AxisPropierties::cbChanged(int state) {
     Q_UNUSED(state);
     updateParent();
     updateControlsVisibility();
+}
+void AxisPropierties::cbLabelsPosBoxChanged(int index) {
+    switch (index) {
+        default:
+        case SHOW_NONE:
+        {
+            axis->m_showBottom = false;
+            axis->m_showTop = false;
+            axis->m_showLeft = false;
+            axis->m_showRight = false;
+            break;
+        }
+        case SHOW_BOTTOM_LEFT:
+        {
+            axis->m_showBottom = true;
+            axis->m_showTop = false;
+            axis->m_showLeft = true;
+            axis->m_showRight = false;
+            break;
+        }
+        case SHOW_TOP_RIGHT:
+        {
+            axis->m_showBottom = false;
+            axis->m_showTop = true;
+            axis->m_showLeft = false;
+            axis->m_showRight = true;
+            break;
+        }
+    }
+    emit axisUpdated();
 }
