@@ -19,7 +19,6 @@ public:
 
 public slots:
     void set(void);
-    void onOk(void);
 
 signals:
     void axisUpdated(void);
@@ -45,8 +44,23 @@ private:
 
     void createDialog(void);
     void updateDialog(void);
+    void backupState(void);
+    void restoreState(void);
+    void updateParentLabelPos(void);
+
+    // State for backup
+    QRectF m_range;
+    QPointF m_div;
+    bool m_divVisible[2];
+    bool m_showBottom;
+    bool m_showTop;
+    bool m_showLeft;
+    bool m_showRight;
 
 private slots:
+    void onOk(void);
+    void onClose(void);
+    void rejected(void);
     void updateParent(void);
     void updateControlsVisibility(void);
     void cbChanged(int state);
