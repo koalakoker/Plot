@@ -74,6 +74,8 @@ private slots:
 
     void saveSettings(void);
     void loadSettings(void);
+    void saveSettings(QString fileName);
+    void loadSettings(QString fileName);
 
 protected:
     void keyPressEvent(QKeyEvent* event);

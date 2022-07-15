@@ -225,50 +225,55 @@ void WPlot::saveData(QString fileName)
     file.close();
 }
 void WPlot::saveSettings(void) {
-    QString fileName = QFileDialog::getSaveFileName(this,"Export setting file","","JSON files (*.json);;All files (*.*)");
-    if (fileName != "") {
-        JSONSerial js;
-        js.add("Xmin", m_plotter->axis->m_range.left());
-        js.add("Xmax", m_plotter->axis->m_range.right());
-        js.add("Ymin", m_plotter->axis->m_range.bottom());
-        js.add("Ymax", m_plotter->axis->m_range.top());
-        js.add("Xdiv", m_plotter->axis->m_div.x());
-        js.add("Ydiv", m_plotter->axis->m_div.y());
-        js.add("XdivVisible", m_plotter->axis->m_divVisible[0]);
-        js.add("YdivVisible", m_plotter->axis->m_divVisible[1]);
-        js.add("showBottom", m_plotter->axis->m_showBottom);
-        js.add("showLeft", m_plotter->axis->m_showLeft);
-        js.add("showTop", m_plotter->axis->m_showTop);
-        js.add("showRight", m_plotter->axis->m_showRight);
-        js.save(fileName);
-    }
+    QFileDialog* diag = new QFileDialog(this,"Export setting file","","JSON files (*.json);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(saveSettings(QString)));
+    diag->setAcceptMode(QFileDialog::AcceptSave);
+    diag->show();
 }
 void WPlot::loadSettings(void) {
-    QString fileName = QFileDialog::getOpenFileName(this,"Open setting file","","JSON files (*.json);;All files (*.*)");
-    if (fileName != "") {
-        JSONSerial js;
-        js.load(fileName);
-        double value;
-        js.read("Xmin", value);
-        m_plotter->axis->m_range.setLeft(value);
-        js.read("Xmax", value);
-        m_plotter->axis->m_range.setRight(value);
-        js.read("Ymin", value);
-        m_plotter->axis->m_range.setBottom(value);
-        js.read("Ymax", value);
-        m_plotter->axis->m_range.setTop(value);
-        js.read("Xdiv", value);
-        m_plotter->axis->m_div.setX(value);
-        js.read("Ydiv", value);
-        m_plotter->axis->m_div.setY(value);
-        js.read("XdivVisible", m_plotter->axis->m_divVisible[0]);
-        js.read("YdivVisible", m_plotter->axis->m_divVisible[1]);
-        js.read("showBottom", m_plotter->axis->m_showBottom);
-        js.read("showLeft", m_plotter->axis->m_showLeft);
-        js.read("showTop", m_plotter->axis->m_showTop);
-        js.read("showRight", m_plotter->axis->m_showRight);
-        updatePlot();
-    }
+    QFileDialog* diag = new QFileDialog(this,"Open setting file","","JSON files (*.json);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(loadSettings(QString)));
+    diag->show();
+}
+void WPlot::saveSettings(QString fileName) {
+    JSONSerial js;
+    js.add("Xmin", m_plotter->axis->m_range.left());
+    js.add("Xmax", m_plotter->axis->m_range.right());
+    js.add("Ymin", m_plotter->axis->m_range.bottom());
+    js.add("Ymax", m_plotter->axis->m_range.top());
+    js.add("Xdiv", m_plotter->axis->m_div.x());
+    js.add("Ydiv", m_plotter->axis->m_div.y());
+    js.add("XdivVisible", m_plotter->axis->m_divVisible[0]);
+    js.add("YdivVisible", m_plotter->axis->m_divVisible[1]);
+    js.add("showBottom", m_plotter->axis->m_showBottom);
+    js.add("showLeft", m_plotter->axis->m_showLeft);
+    js.add("showTop", m_plotter->axis->m_showTop);
+    js.add("showRight", m_plotter->axis->m_showRight);
+    js.save(fileName);
+}
+void WPlot::loadSettings(QString fileName) {
+    JSONSerial js;
+    js.load(fileName);
+    double value;
+    js.read("Xmin", value);
+    m_plotter->axis->m_range.setLeft(value);
+    js.read("Xmax", value);
+    m_plotter->axis->m_range.setRight(value);
+    js.read("Ymin", value);
+    m_plotter->axis->m_range.setBottom(value);
+    js.read("Ymax", value);
+    m_plotter->axis->m_range.setTop(value);
+    js.read("Xdiv", value);
+    m_plotter->axis->m_div.setX(value);
+    js.read("Ydiv", value);
+    m_plotter->axis->m_div.setY(value);
+    js.read("XdivVisible", m_plotter->axis->m_divVisible[0]);
+    js.read("YdivVisible", m_plotter->axis->m_divVisible[1]);
+    js.read("showBottom", m_plotter->axis->m_showBottom);
+    js.read("showLeft", m_plotter->axis->m_showLeft);
+    js.read("showTop", m_plotter->axis->m_showTop);
+    js.read("showRight", m_plotter->axis->m_showRight);
+    updatePlot();
 }
 
 // Context Menu
