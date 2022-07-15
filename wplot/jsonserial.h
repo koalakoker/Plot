@@ -1,7 +1,6 @@
 #ifndef JSONSERIAL_H
 #define JSONSERIAL_H
 
-#include "wplot/jsondata.h"
 #include <QString>
 #include <QVector>
 #include <QJsonObject>
@@ -27,8 +26,7 @@ public:
 private:
     QString toJSON();
     void fromJSON(QString jsonString);
-    QVector<JSONData> values; // values to be stored into a JSON file
-    QJsonObject m_object; // values read from a JSON file
+    QJsonObject* m_object;
 };
 
 #endif // JSONSERIAL_H

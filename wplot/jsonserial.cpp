@@ -6,33 +6,33 @@
 
 JSONSerial::JSONSerial()
 {
-
+    m_object = new QJsonObject();
 }
 
 void JSONSerial::add(QString name, int value) {
-    values.append(JSONData(name, JSONData::INT, (void*)(new int(value))));
+    m_object->insert(name, value);
 }
 void JSONSerial::add(QString name, double value){
-    values.append(JSONData(name, JSONData::NUMBER, (void*)(new double(value))));
+    m_object->insert(name, value);
 }
 void JSONSerial::add(QString name, bool value){
-    values.append(JSONData(name, JSONData::BOOL, (void*)(new bool(value))));
+    m_object->insert(name, value);
 }
 void JSONSerial::add(QString name, QString value) {
-    values.append(JSONData(name, JSONData::STRING, (void*)(new QString(value))));
+    m_object->insert(name, value);
 }
 
 void JSONSerial::read(QString name, int& value) {
-    value = m_object.value(name).toInt();
+    value = m_object->value(name).toInt();
 }
 void JSONSerial::read(QString name, double& value) {
-    value = m_object.value(name).toDouble();
+    value = m_object->value(name).toDouble();
 }
 void JSONSerial::read(QString name, bool& value) {
-    value = m_object.value(name).toBool();
+    value = m_object->value(name).toBool();
 }
 void JSONSerial::read(QString name, QString& value) {
-    value = m_object.value(name).toString();
+    value = m_object->value(name).toString();
 }
 
 void JSONSerial::save(QString fileName) {
@@ -52,49 +52,20 @@ void JSONSerial::load(QString fileName) {
     while (!in.atEnd()) {
         line += in.readLine();
     }
-    values.clear();
+    if (m_object) {
+        delete m_object;
+    }
+    m_object = new QJsonObject();
     fromJSON(line);
 }
 QString JSONSerial::toJSON() {
-    QJsonObject mainObject;
-
-    foreach (JSONData element, this->values) {
-        switch (element.m_type) {
-        case JSONData::INT:
-        {
-            mainObject.insert(element.m_name, *(int*)(element.m_value));
-            break;
-        }
-        case JSONData::NUMBER:
-        {
-            mainObject.insert(element.m_name, *(double*)(element.m_value));
-            break;
-        }
-        case JSONData::BOOL:
-        {
-            mainObject.insert(element.m_name, *(bool*)(element.m_value));
-            break;
-        }
-        case JSONData::STRING:
-        {
-            mainObject.insert(element.m_name, *(QString*)(element.m_value));
-        }
-            break;
-
-        default:
-            break;
-        }
-
-    }
-
     QJsonDocument jsonDoc;
-    jsonDoc.setObject(mainObject);
-
+    jsonDoc.setObject(*m_object);
     return jsonDoc.toJson();
 }
 void JSONSerial::fromJSON(QString jsonString) {
     QByteArray qbJSON = jsonString.toUtf8();
     QJsonDocument jsonDocument = QJsonDocument::fromJson(qbJSON);
     if(jsonDocument.isObject() == false) qDebug() << "It is not a JSON object";
-    m_object = jsonDocument.object();
+    *m_object = jsonDocument.object();
 }
