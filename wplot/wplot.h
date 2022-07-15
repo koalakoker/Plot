@@ -23,8 +23,6 @@ public:
     ~WPlot();
     void addPoint(double t, SData y);
     void createPlot(void);
-    void loadDataFile(QString fileName);
-    void saveDataFile(QString fileName);
 
     QWidget* wParent;
     Plotter *m_plotter;
@@ -68,8 +66,12 @@ private slots:
     void removeCursor(void);
     void setCursorPos(void);
     void cursorNewPos(void);
-    void open_data_file(void);
-    void export_data_file(void);
+
+    void loadData(void);
+    void saveData(void);
+    void loadData(QString fileName);
+    void saveData(QString fileName);
+
     void saveSettings(void);
     void loadSettings(void);
 

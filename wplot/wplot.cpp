@@ -84,8 +84,57 @@ void WPlot::createPlot(void)
     updatePlot();
 }
 
-// Load data file
-void WPlot::loadDataFile(QString fileName)
+// Slots
+void WPlot::updatePlot(void) {
+    m_plotImage = m_plotter->plot();
+    repaint();
+}
+void WPlot::zoom_Undo(void)
+{
+    if (!m_plotter)
+        return;
+    m_plotter->axis->zoom->undo();
+    updatePlot();
+}
+void WPlot::zoom_Redo(void)
+{
+    if (!m_plotter)
+        return;
+    m_plotter->axis->zoom->redo();
+    updatePlot();
+}
+void WPlot::zoom(void)
+{
+    this->state = &this->zoomState;
+    this->state->setCursor(*this);
+}
+void WPlot::hZoom(void)
+{
+    this->state = &this->hZoomState;
+    this->state->setCursor(*this);
+}
+void WPlot::vZoom(void)
+{
+    this->state = &this->vZoomState;
+    this->state->setCursor(*this);
+}
+void WPlot::fullHZoom(void) {
+    m_plotter->axis->zoom->addUndoStatus();
+    m_plotter->axis->zoom->xToFullRange();
+    updatePlot();
+}
+void WPlot::fullVZoom(void) {
+    m_plotter->axis->zoom->addUndoStatus();
+    m_plotter->axis->zoom->yToFullRange();
+    updatePlot();
+}
+void WPlot::loadData(void)
+{
+    QFileDialog* diag = new QFileDialog(this,"OPen data file","","Text files (*.txt);;Data files (*.dat);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(loadData(QString)));
+    diag->show();
+}
+void WPlot::loadData(QString fileName)
 {
     double y_max = 0, y_min = 0;
 
@@ -142,9 +191,14 @@ void WPlot::loadDataFile(QString fileName)
     }
     file.close();
 }
-
-// Save data file
-void WPlot::saveDataFile(QString fileName)
+void WPlot::saveData(void)
+{
+    QFileDialog* diag = new QFileDialog(this,"Export data file","","Text files (*.txt);;Data files (*.dat);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(saveData(QString)));
+    diag->setAcceptMode(QFileDialog::AcceptSave);
+    diag->show();
+}
+void WPlot::saveData(QString fileName)
 {
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
@@ -169,67 +223,6 @@ void WPlot::saveDataFile(QString fileName)
         }
     }
     file.close();
-}
-
-// Slots
-void WPlot::updatePlot(void) {
-    m_plotImage = m_plotter->plot();
-    repaint();
-}
-void WPlot::zoom_Undo(void)
-{
-    if (!m_plotter)
-        return;
-    m_plotter->axis->zoom->undo();
-    updatePlot();
-}
-void WPlot::zoom_Redo(void)
-{
-    if (!m_plotter)
-        return;
-    m_plotter->axis->zoom->redo();
-    updatePlot();
-}
-void WPlot::zoom(void)
-{
-    this->state = &this->zoomState;
-    this->state->setCursor(*this);
-}
-void WPlot::hZoom(void)
-{
-    this->state = &this->hZoomState;
-    this->state->setCursor(*this);
-}
-void WPlot::vZoom(void)
-{
-    this->state = &this->vZoomState;
-    this->state->setCursor(*this);
-}
-void WPlot::fullHZoom(void) {
-    m_plotter->axis->zoom->addUndoStatus();
-    m_plotter->axis->zoom->xToFullRange();
-    updatePlot();
-}
-void WPlot::fullVZoom(void) {
-    m_plotter->axis->zoom->addUndoStatus();
-    m_plotter->axis->zoom->yToFullRange();
-    updatePlot();
-}
-
-void WPlot::open_data_file(void)
-{
-    QString fileName = QFileDialog::getOpenFileName(this,"Open data file","","Data files (*.dat);;Text files (*.txt);;All files (*.*)");
-    if (fileName != "")
-    {
-        this->loadDataFile(fileName);
-    }
-}
-void WPlot::export_data_file(void)
-{
-    QString fileName = QFileDialog::getSaveFileName(this,"Export data file","","Data files (*.dat);;Text files (*.txt);;All files (*.*)");
-    if (fileName!= "") {
-        this->saveDataFile(fileName);
-    }
 }
 void WPlot::saveSettings(void) {
     QString fileName = QFileDialog::getSaveFileName(this,"Export setting file","","JSON files (*.json);;All files (*.*)");
@@ -345,11 +338,11 @@ void WPlot::ShowContextMenu(QPoint pos)
     QMenu saveLoadMenu("Save/Load", this);
 
     QAction exportDataAction("Save data", this);
-    connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(export_data_file()));
+    connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(saveData()));
     saveLoadMenu.addAction(&exportDataAction);
 
     QAction openDataAction("Load data", this);
-    connect(&openDataAction, SIGNAL(triggered()), this, SLOT(open_data_file()));
+    connect(&openDataAction, SIGNAL(triggered()), this, SLOT(loadData()));
     saveLoadMenu.addAction(&openDataAction);
 
     saveLoadMenu.addSeparator();
