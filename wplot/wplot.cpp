@@ -11,6 +11,7 @@
 #include <QTextStream>
 #include <QRegularExpression>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QAbstractButton>
@@ -275,7 +276,38 @@ void WPlot::loadSettings(QString fileName) {
     js.read("showRight", m_plotter->axis->m_showRight);
     updatePlot();
 }
-
+void WPlot::saveFigure(void) {
+    QFileDialog* diag = new QFileDialog(this,"Save figure","","Figure files (*.fig);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(saveFigure(QString)));
+    diag->setAcceptMode(QFileDialog::AcceptSave);
+    diag->show();
+}
+void WPlot::loadFigure(void) {
+    QFileDialog* diag = new QFileDialog(this,"Load figure","","Figure files (*.fig);;All files (*.*)");
+    connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(loadFigure(QString)));
+    diag->show();
+}
+void WPlot::saveFigure(QString fileName) {
+    QFileInfo info(fileName);
+    QString dataFileName     = info.path() + "/" + info.completeBaseName() + ".dat";
+    QString settingsFileName = info.path() + "/" + info.completeBaseName() + ".json";
+    saveData(dataFileName);
+    saveSettings(settingsFileName);
+    JSONSerial js;
+    js.add("DataFilePath", dataFileName);
+    js.add("SettingsFilePath", settingsFileName);
+    js.save(fileName);
+}
+void WPlot::loadFigure(QString fileName) {
+    JSONSerial js;
+    js.load(fileName);
+    QString dataFileName;
+    QString settingsFileName;
+    js.read("DataFilePath", dataFileName);
+    loadData(dataFileName);
+    js.read("SettingsFilePath", settingsFileName);
+    loadSettings(settingsFileName);
+}
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
 {
@@ -341,6 +373,16 @@ void WPlot::ShowContextMenu(QPoint pos)
 
     // Save/Load Menu
     QMenu saveLoadMenu("Save/Load", this);
+
+    QAction exportFigureAction("Save figure", this);
+    connect(&exportFigureAction, SIGNAL(triggered()), this, SLOT(saveFigure()));
+    saveLoadMenu.addAction(&exportFigureAction);
+
+    QAction openFigureAction("Load figure", this);
+    connect(&openFigureAction, SIGNAL(triggered()), this, SLOT(loadFigure()));
+    saveLoadMenu.addAction(&openFigureAction);
+
+    saveLoadMenu.addSeparator();
 
     QAction exportDataAction("Save data", this);
     connect(&exportDataAction, SIGNAL(triggered()), this, SLOT(saveData()));

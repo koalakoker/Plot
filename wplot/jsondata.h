@@ -9,7 +9,8 @@ public:
     typedef enum {
         INT,
         NUMBER,
-        BOOL
+        BOOL,
+        STRING
     } Data_t;
 
     JSONData(QString name, Data_t type, void* value);

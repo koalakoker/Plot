@@ -76,6 +76,10 @@ private slots:
     void loadSettings(void);
     void saveSettings(QString fileName);
     void loadSettings(QString fileName);
+    void saveFigure(void);
+    void loadFigure(void);
+    void saveFigure(QString fileName);
+    void loadFigure(QString fileName);
 
 protected:
     void keyPressEvent(QKeyEvent* event);

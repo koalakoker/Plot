@@ -18,6 +18,9 @@ void JSONSerial::add(QString name, double value){
 void JSONSerial::add(QString name, bool value){
     values.append(JSONData(name, JSONData::BOOL, (void*)(new bool(value))));
 }
+void JSONSerial::add(QString name, QString value) {
+    values.append(JSONData(name, JSONData::STRING, (void*)(new QString(value))));
+}
 
 void JSONSerial::read(QString name, int& value) {
     value = m_object.value(name).toInt();
@@ -27,6 +30,9 @@ void JSONSerial::read(QString name, double& value) {
 }
 void JSONSerial::read(QString name, bool& value) {
     value = m_object.value(name).toBool();
+}
+void JSONSerial::read(QString name, QString& value) {
+    value = m_object.value(name).toString();
 }
 
 void JSONSerial::save(QString fileName) {
@@ -69,6 +75,11 @@ QString JSONSerial::toJSON() {
             mainObject.insert(element.m_name, *(bool*)(element.m_value));
             break;
         }
+        case JSONData::STRING:
+        {
+            mainObject.insert(element.m_name, *(QString*)(element.m_value));
+        }
+            break;
 
         default:
             break;
