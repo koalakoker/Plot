@@ -69,13 +69,13 @@ private slots:
 
     void loadData(void);
     void saveData(void);
-    void loadData(QString fileName);
+    void loadData(QString fileName, bool update = true);
     void saveData(QString fileName);
 
     void saveSettings(void);
     void loadSettings(void);
     void saveSettings(QString fileName);
-    void loadSettings(QString fileName);
+    void loadSettings(QString fileName, bool update = true);
     void saveFigure(void);
     void loadFigure(void);
     void saveFigure(QString fileName);

@@ -135,7 +135,7 @@ void WPlot::loadData(void)
     connect(diag,SIGNAL(fileSelected(QString)), this, SLOT(loadData(QString)));
     diag->show();
 }
-void WPlot::loadData(QString fileName)
+void WPlot::loadData(QString fileName, bool update)
 {
     double y_max = 0, y_min = 0;
 
@@ -188,7 +188,9 @@ void WPlot::loadData(QString fileName)
         m_plotter->curve->m_data = m_data;
         m_axisProps.axis = m_plotter->axis;
         emit newPlotter();
-        updatePlot();
+        if (update) {
+            updatePlot();
+        }
     }
     file.close();
 }
@@ -252,7 +254,7 @@ void WPlot::saveSettings(QString fileName) {
     js.add("showRight", m_plotter->axis->m_showRight);
     js.save(fileName);
 }
-void WPlot::loadSettings(QString fileName) {
+void WPlot::loadSettings(QString fileName, bool update) {
     JSONSerial js;
     js.load(fileName);
     double value;
@@ -274,7 +276,9 @@ void WPlot::loadSettings(QString fileName) {
     js.read("showLeft", m_plotter->axis->m_showLeft);
     js.read("showTop", m_plotter->axis->m_showTop);
     js.read("showRight", m_plotter->axis->m_showRight);
-    updatePlot();
+    if (update) {
+        updatePlot();
+    }
 }
 void WPlot::saveFigure(void) {
     QFileDialog* diag = new QFileDialog(this,"Save figure","","Figure files (*.fig);;All files (*.*)");
@@ -304,9 +308,10 @@ void WPlot::loadFigure(QString fileName) {
     QString dataFileName;
     QString settingsFileName;
     js.read("DataFilePath", dataFileName);
-    loadData(dataFileName);
+    loadData(dataFileName, false);
     js.read("SettingsFilePath", settingsFileName);
-    loadSettings(settingsFileName);
+    loadSettings(settingsFileName, false);
+    updatePlot();
 }
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
@@ -448,12 +453,12 @@ void WPlot::setCursorPos(void) {
     this->setCurPosDiag->connect(bCancel,SIGNAL(clicked()),this->setCurPosDiag,SLOT(close()));
 }
 void WPlot::cursorNewPos(void) {
-    QString inputText = this->curPosEdit->text();
+    QString inputText = curPosEdit->text();
     bool isValid;
     qreal value = inputText.toDouble(&isValid);
     if (isValid) {
-        this->m_plotter->cursor->setPos(this->selectedCursor, value);
-        this->updatePlot();
+        m_plotter->cursor->setPos(selectedCursor, value);
+        updatePlot();
     }
     this->setCurPosDiag->close();
 }
