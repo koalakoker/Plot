@@ -19,7 +19,7 @@ public:
         LINE_STYLE
     } style_t;
 
-    Curve(Plotter* plotter, style_t style = LINE_STYLE);
+    Curve(Plotter* plotter, style_t style);
     void plot(QPainter& p, QPen& pen);
     QRectF getFullExtent(void);
     QVector<SData> m_data;

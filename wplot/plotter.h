@@ -14,7 +14,7 @@ class Plotter : public QObject {
     Q_OBJECT
 
 public:
-    Plotter(QSize size, QRectF range);
+    Plotter(QSize size, QRectF range, Curve::style_t style);
     Curve* curve;
     Axis* axis;
     Cursor* cursor;

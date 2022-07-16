@@ -18,8 +18,8 @@
 #include <QPushButton>
 #include <QDebug>
 
-WPlot::WPlot(QWidget *parent) :
-    QWidget(parent), m_plotter(NULL)
+WPlot::WPlot(QWidget *parent, Curve::style_t defaultStyle) :
+    QWidget(parent), m_plotter(NULL), m_defaultStyle(defaultStyle)
 {
     setFocusPolicy(Qt::StrongFocus);
     this->wParent = parent;
@@ -78,7 +78,8 @@ void WPlot::createPlot(void)
 
     m_plotter = new Plotter(
                 plotterSize,
-                QRectF(m_x_min, m_y_min, m_x_max - m_x_min, m_y_max - m_y_min));
+                QRectF(m_x_min, m_y_min, m_x_max - m_x_min, m_y_max - m_y_min),
+                m_defaultStyle);
     m_plotter->curve->m_data = m_data;
     m_axisProps.axis = m_plotter->axis;
     emit newPlotter();
@@ -184,7 +185,8 @@ void WPlot::loadData(QString fileName, bool update)
 
         m_plotter = new Plotter(
                     size(),
-                    QRectF(m_x_min, y_min, m_x_max - m_x_min, y_max - y_min));
+                    QRectF(m_x_min, y_min, m_x_max - m_x_min, y_max - y_min),
+                    m_defaultStyle);
         m_plotter->curve->m_data = m_data;
         m_axisProps.axis = m_plotter->axis;
         emit newPlotter();

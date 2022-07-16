@@ -19,7 +19,7 @@ class WPlot : public QWidget
     Q_OBJECT
 
 public:
-    explicit WPlot(QWidget *parent = 0);
+    explicit WPlot(QWidget *parent = 0, Curve::style_t defaultStyle = Curve::LINE_STYLE);
     ~WPlot();
     void addPoint(double t, SData y);
     void createPlot(void);
@@ -53,6 +53,7 @@ signals:
 private:
     QVector<SData> m_data;
     QImage m_plotImage;
+    Curve::style_t m_defaultStyle;
 
     double m_x_max = 0, m_x_min = 0;
     double m_y_max = 0, m_y_min = 0;

@@ -6,10 +6,10 @@
 
 #include <QDebug>
 
-Plotter::Plotter(QSize size, QRectF range)
+Plotter::Plotter(QSize size, QRectF range, Curve::style_t style)
     : m_size(size) {
     axis = new Axis(this, range);
-    curve = new Curve(this);
+    curve = new Curve(this, style);
     cursor = new Cursor(this);
 }
 
