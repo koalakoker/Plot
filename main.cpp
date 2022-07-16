@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     WPlot plot(&w);
-    float m = 10;
+    float m = 1;
     for (int i = 0; i < (360*3); i++) {
-        plot.addPoint(i, SData(m*sin(i * M_PI / 180.0f) + (m/4)*sin(3 * i * M_PI/180)));
+        plot.addPoint(i, SData(i));
     }
     plot.createPlot();
     w.show();
