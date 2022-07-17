@@ -13,8 +13,15 @@ int main(int argc, char *argv[])
 
     WPlot plot(&w);
     float m = 1;
-    for (int i = 0; i < (360*3); i++) {
-        plot.addPoint(i, SData(i));
+    int xmax = 360 * 3;
+    for (int i = -xmax; i < xmax; i++) {
+        double y;
+        if (i != 0) {
+            y = m*sin(i*M_PI/180)/i;
+        } else {
+            y = 0;
+        }
+        plot.addPoint(i, SData(y));
     }
     plot.createPlot();
     w.show();
