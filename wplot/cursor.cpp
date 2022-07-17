@@ -135,7 +135,7 @@ QVector<double> Cursor::getValueTrack(int cur)
     QVector<double> data;
     qreal x = m_pos.at(cur);
     qreal dx = plotter->curve->m_data[1][0] - plotter->curve->m_data[0][0];
-    int i = (int)(x/dx);
+    int i = (int)((x-plotter->curve->m_data[0][0])/dx);
     for (int track = 0; track < plotter->curve->m_data[0].size(); track++)
     {
         if ((i >= 0) && (i < plotter->curve->m_data.size()))
