@@ -318,6 +318,7 @@ void WPlot::loadFigure(QString fileName) {
 // Context Menu
 void WPlot::ShowContextMenu(QPoint pos)
 {
+    m_pos = pos;
     bool onCursor = m_plotter->cursor->on(pos, this->selectedCursor, false);
 
     QMenu contextMenu("Context menu", this);
@@ -426,7 +427,7 @@ void WPlot::ShowContextMenu(QPoint pos)
 
 // Cursor functions
 void WPlot::addCursor(void) {
-    m_plotter->cursor->add();
+    m_plotter->cursor->addAtPixel(m_pos.x());
     updatePlot();
 }
 void WPlot::removeCursor(void) {

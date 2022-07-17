@@ -54,6 +54,7 @@ private:
     QVector<SData> m_data;
     QImage m_plotImage;
     Curve::style_t m_defaultStyle;
+    QPoint m_pos;
 
     double m_x_max = 0, m_x_min = 0;
     double m_y_max = 0, m_y_min = 0;
