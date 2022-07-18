@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
+    // Example of plot in the main widget
     WPlot plot(&w);
     float m = 1;
     double start = -20.0, end = 20.0;
@@ -29,6 +30,16 @@ int main(int argc, char *argv[])
     }
     plot.createPlot();
     w.show();
+
+    // Example of plot in stand alone widget
+    WPlot plot2;
+    for (int i = 0; i < 360; i++) {
+        plot2.addPoint(i, SData(sin(i*M_PI/180)));
+    }
+    plot2.createPlot();
+    plot2.show();
+    plot2.setWindowTitle("Sin function");
+    plot2.resize(QSize(800, 600));
 
     return a.exec();
 }
